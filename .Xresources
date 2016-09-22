@@ -1,0 +1,67 @@
+Xft.antialias:             	1
+Xft.autohint:              	0
+Xft.dpi:                   	96
+Xft.hinting:               	1
+Xft.hintstyle:             	hintfull
+Xft.lcdfilter:             	lcddefault
+Xft.rgba:                  	rgb
+
+URxvt.font:                     xft:Roboto Mono:style=regular:size=10:antialias=true:hinting=hintfull
+URxvt.boldFont:                 xft:Roboto Mono:stlye=bold:size=10:antialias=true:hinting=hintfull
+
+URxvt.skipBuiltinGlyphs:   	true
+URxvt.secondaryScreen:     	true
+URxvt.secondaryScroll:     	false
+URxvt.iso14755:            	false
+URxvt.iso14755_52:            	false
+URxvt.scrollBar:           	false
+URxvt.scrollTtyOutput:     	false
+URxvt.scrollWithBuffer:    	true
+URxvt.scrollTtyKeypress:   	true
+URxvt.cursorBlink:         	true
+URxvt.urgentOnBell:        	true
+URxvt.buffered:            	true
+
+URxvt.saveLines:           	1000
+URxvt.depth:               	32
+
+! special
+URxvt.foreground:               #c5c8c6
+URxvt.background:               #1d1f21
+URxvt.cursorColor:              #c5c8c6
+
+! black
+URxvt.color0:                   #1d1f21
+URxvt.color8:                   #969896
+
+! red
+URxvt.color1:                   #cc6666
+URxvt.color9:                   #cc6666
+
+! green
+URxvt.color2:                   #b5bd68
+URxvt.color10:                  #b5bd68
+
+! yellow
+URxvt.color3:                   #f0c674
+URxvt.color11:                  #f0c674
+
+! blue
+URxvt.color4:                   #81a2be
+URxvt.color12:                  #81a2be
+
+! magenta
+URxvt.color5:                   #b294bb
+URxvt.color13:                  #b294bb
+
+! cyan
+URxvt.color6:                   #8abeb7
+URxvt.color14:                  #8abeb7
+
+! white
+URxvt.color7:                   #c5c8c6
+URxvt.color15:                  #ffffff
+
+.colorIT:     	                #87af5f
+.colorBD:     	                #d7d7d7
+.colorUL:     	                #87afd7

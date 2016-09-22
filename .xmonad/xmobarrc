@@ -1,0 +1,19 @@
+Config { font           = "xft:Roboto Mono:style=medium:size=10,FontAwesome:size=10"
+       , additionalFonts = ["xft:FontAwesome-10"]
+       , bgColor        = "#1D1F21"
+       , fgColor        = "#C5C8C6"
+       , position = Top
+       , alpha = 200
+       , commands =
+           [ Run UnsafeStdinReader
+           , Run Date "%H:%M:%S - %y/%m/%d" "date" 10
+           , Run MultiCpu ["-t","Cpu: <total0> <total1> <total2> <total3>","-L","30","-H","60","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC","-w","3"] 10
+           , Run Battery [ "--template" , "<left>%"
+                         ] 60
+           ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = " %UnsafeStdinReader% }{ <fn=1></fn>%battery% | <fc=#C5C8C6>%date%</fc> "
+       }
+
+-- vim: ft=haskell

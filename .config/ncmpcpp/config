@@ -1,0 +1,58 @@
+# TODO: figure out what half this crap does (I forgot) and 
+# reconfig/remove/reorganize.
+
+ncmpcpp_directory               = ~/.config/ncmpcpp
+mpd_host                        = localhost
+mpd_port                        = 6600
+mpd_connection_timeout          = 5
+mpd_music_dir                   = ~/media/music
+mpd_crossfade_time              = 0
+
+visualizer_fifo_path            = /tmp/mpd.fifo
+visualizer_output_name          = my_fifo
+visualizer_in_stereo            = yes
+visualizer_sample_multiplier    = .8
+visualizer_sync_interval        = 15
+visualizer_type                 = spectrum
+visualizer_look                 = -+
+visualizer_color                = blue, cyan, green, yellow, magenta, red
+
+song_list_format                = {%a - }{%t}|{$8%f$9}$R{$3(%l)$9}
+song_status_format              = {{%a{ "%b"{ (%y)}} - }{%t}}|{%f}
+song_library_format             = {%n - }{%t}|{%f}
+now_playing_suffix              = $/b
+song_columns_list_format        = (20)[red]{a} (6f)[green]{NE} (50)[blue]{t|f:Title} (20)[yellow]{b} (7f)[magenta]{l}
+
+browser_display_mode            = columns
+search_engine_display_mode      = columns
+playlist_editor_display_mode    = columns
+
+incremental_seeking             = yes
+autocenter_mode                 = yes
+centered_cursor                 = yes
+progressbar_boldness            = yes
+user_interface                  = classic
+header_visibility               = yes
+statusbar_visibility            = yes
+titles_visibility               = yes
+header_text_scrolling           = yes
+display_volume_level            = yes
+display_bitrate                 = yes
+mouse_support                   = no
+colors_enabled                  = yes
+header_window_color             = white
+volume_color                    = green
+state_line_color                = red
+main_window_color               = magenta
+color1                          = green
+color2                          = red
+main_window_highlight_color     = green
+progressbar_color               = black
+progressbar_elapsed_color       = green
+statusbar_color                 = green
+alternative_ui_separator_color  = black
+active_column_color             = red
+window_border_color             = magenta
+active_window_border            = green
+
+# vim: ft=conf
