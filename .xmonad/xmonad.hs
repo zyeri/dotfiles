@@ -29,7 +29,6 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
 -- config
-
 myTerminal              = "/usr/bin/termite"
 
 myModMask               = mod4Mask

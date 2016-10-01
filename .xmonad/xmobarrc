@@ -13,7 +13,7 @@ Config { font           = "xft:Roboto Mono:style=medium:size=10,FontAwesome:size
            ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = " %UnsafeStdinReader% }{ <fn=1></fn>%battery% | <fc=#C5C8C6>%date%</fc> "
+       , template = " %UnsafeStdinReader% }{ %battery% | <fc=#C5C8C6>%date%</fc> "
        }
 
 -- vim: ft=haskell
