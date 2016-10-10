@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# sync with IMAP 
+mbsync -Va
+
+# update notmuch database
+notmuch new
+
+# perform initial tagging
+afew --tag --new
