@@ -1,6 +1,6 @@
 Xft.antialias:             	1
 Xft.autohint:              	0
-Xft.dpi:                   	96
+Xft.dpi:                   	98
 Xft.hinting:               	1
 Xft.hintstyle:             	hintfull
 Xft.lcdfilter:             	lcddefault
@@ -25,43 +25,54 @@ URxvt.buffered:            	true
 URxvt.saveLines:           	1000
 URxvt.depth:               	32
 
-! special
-URxvt.foreground:               #c5c8c6
-URxvt.background:               #1d1f21
-URxvt.cursorColor:              #c5c8c6
+! https://github.com/chriskempson/base16-xresources
+! Base16 Tomorrow Night
+! Scheme: Chris Kempson (http://chriskempson.com)
 
-! black
-URxvt.color0:                   #1d1f21
-URxvt.color8:                   #969896
+#define base00 #1d1f21
+#define base01 #282a2e
+#define base02 #373b41
+#define base03 #969896
+#define base04 #b4b7b4
+#define base05 #c5c8c6
+#define base06 #e0e0e0
+#define base07 #ffffff
+#define base08 #cc6666
+#define base09 #de935f
+#define base0A #f0c674
+#define base0B #b5bd68
+#define base0C #8abeb7
+#define base0D #81a2be
+#define base0E #b294bb
+#define base0F #a3685a
 
-! red
-URxvt.color1:                   #cc6666
-URxvt.color9:                   #cc6666
+*.foreground:   base05
+*.background:   base00
+*.cursorColor:  base05
 
-! green
-URxvt.color2:                   #b5bd68
-URxvt.color10:                  #b5bd68
+*.color0:       base00
+*.color1:       base08
+*.color2:       base0B
+*.color3:       base0A
+*.color4:       base0D
+*.color5:       base0E
+*.color6:       base0C
+*.color7:       base05
 
-! yellow
-URxvt.color3:                   #f0c674
-URxvt.color11:                  #f0c674
+*.color8:       base03
+*.color9:       base08
+*.color10:      base0B
+*.color11:      base0A
+*.color12:      base0D
+*.color13:      base0E
+*.color14:      base0C
+*.color15:      base07
 
-! blue
-URxvt.color4:                   #81a2be
-URxvt.color12:                  #81a2be
-
-! magenta
-URxvt.color5:                   #b294bb
-URxvt.color13:                  #b294bb
-
-! cyan
-URxvt.color6:                   #8abeb7
-URxvt.color14:                  #8abeb7
-
-! white
-URxvt.color7:                   #c5c8c6
-URxvt.color15:                  #ffffff
-
-.colorIT:     	                #87af5f
-.colorBD:     	                #d7d7d7
-.colorUL:     	                #87afd7
+! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
+! use 'shell' template to set these if necessary
+*.color16:      base09
+*.color17:      base0F
+*.color18:      base01
+*.color19:      base02
+*.color20:      base04
+*.color21:      base06
