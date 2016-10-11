@@ -1,19 +1,30 @@
-Config { font           = "xft:Roboto Mono:style=medium:size=10,FontAwesome:size=10"
+Config { font           = "xft:Roboto Mono:size=10:medium:antialias=true"
        , additionalFonts = ["xft:FontAwesome-10"]
-       , bgColor        = "#1D1F21"
-       , fgColor        = "#C5C8C6"
+       , bgColor        = "#1d1f21"
+       , fgColor        = "#c5c8c6"
        , position = Top
-       , alpha = 200
+       , border = NoBorder
        , commands =
            [ Run UnsafeStdinReader
            , Run Date "%H:%M:%S - %y/%m/%d" "date" 10
-           , Run MultiCpu ["-t","Cpu: <total0> <total1> <total2> <total3>","-L","30","-H","60","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC","-w","3"] 10
-           , Run Battery [ "--template" , "<left>%"
-                         ] 60
+           , Run Battery [ "--template", "batt: <acstatus>"
+                         , "--Low",         "10"
+                         , "--High",        "80"
+                         , "--low",         "#cc6666"
+                         , "--normal",      "#c5c8c6"
+                         , "--high",        "#b5bd68"
+
+                         , "--" -- battery specific options
+                         -- discharging status
+                         , "-o"   , "<left>% (<timeleft>)"
+                         -- AC "on" status
+                         , "-O"   , "<fc=#b5bd68>Charging</fc>"
+                         -- charged status
+                         , "-i"   , "<fc=#81a2be>Charged</fc>"] 60
            ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = " %UnsafeStdinReader% }{ %battery% | <fc=#C5C8C6>%date%</fc> "
+       , template = " %UnsafeStdinReader% }{ %battery% | %date% "
        }
 
 -- vim: ft=haskell
