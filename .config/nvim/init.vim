@@ -4,6 +4,7 @@
 call plug#begin('$HOME/.config/nvim/plugged')
     Plug 'chriskempson/base16-vim'
     Plug 'sheerun/vim-polyglot'
+    Plug 'vim-scripts/gnuplot.vim'
 
     Plug 'tpope/vim-git'
     Plug 'tpope/vim-repeat'
@@ -17,13 +18,18 @@ call plug#begin('$HOME/.config/nvim/plugged')
 
     Plug 'mileszs/ack.vim'
     Plug 'neomake/neomake'
-    Plug 'metakirby5/codi.vim'
-    Plug 'mhinz/vim-startify'
     Plug 'justinmk/vim-dirvish'
-    " Plug 'junegunn/vim-peekaboo'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'gregsexton/gitv'
+    Plug 'Valloric/ListToggle'
+    Plug 'ap/vim-css-color'
+    " Plug 'metakirby5/codi.vim'
+    " Plug 'mhinz/vim-startify'
+
     Plug 'junegunn/gv.vim'
+    Plug 'junegunn/vim-github-dashboard', { 'on': ['GHDashboard', 'GHActivity']      }
+    Plug 'junegunn/fzf.vim'
+    " Plug 'dyng/ctrlsf.vim'
 
     Plug 'ctrlpvim/ctrlp.vim' | Plug 'nixprime/cpsm'
     Plug 'itchyny/lightline.vim' | Plug 'daviesjamie/vim-base16-lightline'
@@ -39,7 +45,11 @@ call plug#begin('$HOME/.config/nvim/plugged')
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
         Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
-        Plug 'Shougo/echodoc.vim'
+        " Plug 'Shougo/context_filetype.vim'
+
+        Plug 'ervandew/supertab'
+        " " snippets
+        " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
         " " includes completion
         Plug 'Shougo/neoinclude.vim'
@@ -52,7 +62,7 @@ call plug#begin('$HOME/.config/nvim/plugged')
 
         Plug 'zchee/deoplete-go'
         Plug 'zchee/deoplete-clang'
-        Plug 'zchee/deoplete-jedi' 
+        Plug 'zchee/deoplete-jedi'
 
         Plug 'eagletmt/neco-ghc'
         Plug 'carlitux/deoplete-ternjs'
@@ -63,13 +73,27 @@ call plug#begin('$HOME/.config/nvim/plugged')
     endif
 call plug#end()
 
+" ------------------------
+"  Setup and Configuration
+" ------------------------
+
+" for detecting/enabling platform-specific features
+if !exists("g:platform")
+    if has("win32") || has("win64")
+        let g:platform='windows'
+    else
+        let g:platform = tolower(substitute(system('uname'), '\n', '', ''))
+    endif
+endif
+
 " nvim-specific stuff
 if has('nvim')
     let g:python3_host_prog = '/usr/bin/python3'
     let g:python_host_prog = '/usr/bin/python2'
 
     if exists('&inccommand')
-        set inccommand=split
+        " set inccommand=split
+        set inccommand=nosplit
     endif
 
     if exists('&termguicolors')
@@ -79,22 +103,29 @@ if has('nvim')
     tnoremap <Esc> <C-\><C-n>
 endif
 
-" use <Space> as the leader 
+" use the comma key as <leader>
 let mapleader = ','
+
+" use the backslash key as <localleader>
 let maplocalleader = '\\'
 
+" set the colorscheme but dont't throw an error if it's unavailable
 silent! colorscheme base16-tomorrow-night
 
 " if available, use ag in place of grep
-if executable('ag')
-    set grepprg=ag\ --vimgrep\ $*
-    set grepformat=%f:%l:%c:%m
+" if executable('ag')
+"     set grepprg=ag\ --vimgrep\ $*
+"     set grepformat=%f:%l:%c:%m
+" endif
+if executable("rg")
+    set grepprg=rg\ --vimgrep\ --no-heading
+    set grepformat=%f:%l:%c:%m,%f:%l:%m
 endif
 
 " dark terminal
 set background=dark
 
-" only show ten lines of insert-mode completion 
+" only show ten lines of insert-mode completion
 set pumheight=10
 
 " show a colored column at 72 characters
@@ -116,7 +147,7 @@ set gdefault
 set hidden
 
 " show line numbers
-set number relativenumber 
+set number relativenumber
 
 " briefly show matching brackets on insertion
 set showmatch
@@ -147,7 +178,7 @@ set wrapscan
 set autoread
 
 " control how neovim formats
-set formatoptions=tcqj 
+set formatoptions=tcqj
 
 " history to remember
 set history=10000
@@ -157,7 +188,7 @@ set list
 " set listchars=tab:>\ ,trail:-,nbsp:+
 set listchars=tab:>\ ,nbsp:+
 
-" dictionary 
+" dictionary
 set dictionary="/usr/share/dict/words"
 
 " add dictionary completion
@@ -189,7 +220,7 @@ set wildignore+=*.so,*.swp,*.zip
 " scrolling
 set scrolloff=10
 
-" keep 15 characters space to the sides 
+" keep 15 characters space to the sides
 set sidescrolloff=15
 set sidescroll=1
 
@@ -224,6 +255,13 @@ let g:netrw_list_hide = netrw_gitignore#Hide()
 let g:netrw_list_hide .= ',\(^\|\s\s\)\zs\.\S\+'
 
 " --------
+" Commands
+" --------
+" :Grep <keyword>
+command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
+
+
+" --------
 " bindings
 " --------
 " yank to end of line
@@ -243,10 +281,20 @@ nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><cr>
 " kill the current buffer
 nnoremap <silent><leader>K :bdelete<cr>
 
+" nnoremap <silent>coq :setlocal :copwn
+" nnoremap <silent>[oq :copen<CR>
+" nnoremap <silent>]oq :cclose<CR>
+
+ 
+" ---------
+" Functions
+" ---------
+
 " configure latex
 function! s:latex_setup() abort
     setlocal makeprg=latexmk\ -pdf\ %
     setlocal conceallevel=0
+
 
     let s:current_syntax = b:current_syntax
     unlet b:current_syntax
@@ -260,16 +308,48 @@ function! s:latex_setup() abort
                 \ contains=@CPP,texBeginEnd
                 \ keepend
                 " \ transparent
-    hi link Snip SpeicalComment
+    hi link Snip SpecialComment
 endfunction
 
-augroup cmds
+" --------
+" autocmds
+" --------
+augroup vimrc
     au!
     " email buffer
     au BufRead,BufNewFile *mutt-* setf mail
+
     " error format for clang
     au FileType c,cpp setl errorformat=%f:%l:%c:\ %t%s:\ %m
-    " au FileType tex call s:latex_setup()
+
+    " for some reason polyglot sets it to javascript.jsx and ignores
+    " g:polyglot_disabled, so use an autocmd to set the correct filetype
+    au FileType javascript.jsx setl ft=javascript
+
+    " configuration for TeX/LaTeX files
+    au FileType tex call s:latex_setup()
+
+    " amend commit
+    au FileType gitcommit nnoremap <buffer> <silent> cA :<C-U>Gcommit --amend --date="$(date)"<CR>
+
+    " unset paste when leaving insert mode
+    au InsertLeave * silent! set nopaste
+
+    " close preview window after completion is done
+    au CompleteDone * pclose!
+
+    if exists('g:plugs["vim-dirvish"]')
+        au FileType dirvish silent keeppatterns g@\v/\.[^\/]+/?$@d
+
+        " list directories first
+        au FileType dirvish silent :sort r /[^\/]$/
+
+        " Enable :Gstatus and friends
+        au FileType dirvish call fugitive#detect(@%)
+        au FileType dirvish nnoremap <silent><buffer> gr :<C-u>Dirvish %<CR>
+        au FileType dirvish nnoremap <silent><buffer>
+                    \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d<CR>
+    endif
 augroup END
 
 " insert a hashbang for the current filetype
@@ -307,6 +387,9 @@ if exists('g:plugs["ctrlp.vim"]')
     let g:ctrlp_working_path_mode = 'ca'
     let g:ctrlp_open_new_file = 'h'
     let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:10'
+
+    nnoremap <silent><C-b> :<C-U>CtrlPBuffer<cr>
+    nnoremap <silent><C-t> :<C-u>CtrlPTag<cr>
 endif
 
 " ------
@@ -350,22 +433,8 @@ endif
 " ----------
 " vim-dirvish
 " ----------
-if exists('g:plugs["vim-dirvish"]')
-    augroup dirvish_events
-        au!
-        " don't show hidden files
-        au FileType dirvish silent keeppatterns g@\v/\.[^\/]+/?$@d
-
-        " list directories first
-        au FileType dirvish silent :sort r /[^\/]$/
-
-        " Enable :Gstatus and friends
-        au FileType dirvish call fugitive#detect(@%)
-        au FileType dirvish nnoremap <silent><buffer> gr :<C-u>Dirvish %<CR>
-        au FileType dirvish nnoremap <silent><buffer>
-                    \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d<CR>
-    augroup END
-endif
+" if exists('g:plugs["vim-dirvish"]')
+" endif
 
 " -----------
 " haskell-vim
@@ -383,45 +452,66 @@ endif
 " deoplete
 " --------
 if exists('g:plugs["deoplete.nvim"]')
-    " make sure input_patterns exists
     if !exists('g:deoplete#omni#input_patterns')
         let g:deoplete#omni#input_patterns = {}
     endif
+    if !exists('g:deoplete#omni_patterns')
+        let g:deoplete#omni_patterns = {}
+    endif
 
-    " make sure keyword_patterns exists
+    if !exists('g:deoplete#omni#functions')
+        let g:deoplete#omni#functions = {}
+    endif
+
     if !exists('g:deoplete#keyword_patterns')
         let g:deoplete#keyword_patterns = {}
     endif
-    
-    " make sure sources exists
+
     if !exists('g:deoplete#sources')
         let g:deoplete#sources = {}
     endif
 
-    " make sure omni_patterns exists
-    if !exists('g:deoplete#omni_patterns')
-        let g:deoplete#omni_patterns = {}
+    if !exists('g:deoplete#ignore_sources')
+        let g:deoplete#ignore_sources = {}
     endif
+
+    " set completeopt+=noinsert
 
     " use deoplete
     let g:deoplete#enable_at_startup = 1
 
     " use smartcase
     let g:deoplete#enable_smart_case = 1
-    
-    " compatibility with snipmate snippets
-    let g:neosnippet#enable_snipmate_compatibility = 1
 
-    " Use auto delimiter feature
-    call deoplete#custom#set('_', 'converters', ['converter_auto_delimiter', 'remove_overlap'])
+    " omni funcs
+    let g:deoplete#omni#functions.html = 'htmlcomplete#CompleteTags'
+    let g:deoplete#omni#functions.css = 'csscomplete#CompleteCSS'
+    let g:deoplete#omni#functions.xml = 'xmlcomplete#CompleteTags'
 
-    " omnifuncs
-    augroup deoplete_autocmds
-        au!
-        au FileType css setlocal omnifunc=csscomplete#CompleteCSS
-        au FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-        au FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-    augroup END
+    " LaTeX completionn
+    let g:deoplete#omni_patterns.tex =
+                \ '\v\\%('
+                \ . '\a*cite\a*%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+                \ . '|\a*ref%(\s*\{[^}]*|range\s*\{[^,}]*%(}\{)?)'
+                \ . '|hyperref\s*\[[^]]*'
+                \ . '|includegraphics\*?%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+                \ . '|%(include%(only)?|input)\s*\{[^}]*'
+                \ . ')\m'
+
+    call deoplete#custom#set('_', 'converters', [
+                \ 'converter_remove_paren',
+                \ 'converter_remove_overlap',
+                \ 'converter_truncate_abbr',
+                \ 'converter_truncate_menu',
+                \ 'converter_auto_delimiter',
+                \ ])
+
+
+    call deoplete#custom#set('ghc', 'sorters', ['sorter_word'])
+    call deoplete#custom#set('clang', 'input_pattern', '\.\w*|\.->\w*|\w+::\w*')
+    call deoplete#custom#set('clang', 'max_pattern_length', -1)
+
+    imap <C-k> <Plug>(neosnippet_expand_or_jump)
 
     " C/C++ completion
     if exists('g:plugs["deoplete-clang"]')
@@ -434,6 +524,7 @@ if exists('g:plugs["deoplete.nvim"]')
     " JavaScript completion
     if exists('g:plugs["deoplete-ternjs"]')
         let g:tern_request_timeout = 1
+        let g:deoplete#omni#functions.javascript = 'tern#Complete'
     endif
 
     " Rust completion
@@ -468,17 +559,6 @@ if exists('g:plugs["deoplete.nvim"]')
         let g:tmuxcomplete#trigger = ''
     endif
 
-    " " Git completion
-    " if exists('g:plugs["deoplete-github"]')
-    "     " setup sources and keyword patterns
-    "     let g:deoplete#sources.gitcommit = ['github']
-    "     let g:deoplete#keyword_patterns.gitcommit = '.+'
-
-    "     call deoplete#util#set_pattern(
-    "                 \ g:deoplete#omni#input_patterns,
-    "                 \ 'gitcommit', [g:deoplete#keyword_patterns.gitcommit])
-    " endif
-
 
     " Go completion
     if exists('g:plugs["deoplete-go"]')
@@ -487,48 +567,67 @@ if exists('g:plugs["deoplete.nvim"]')
 
     " Haskell completion
     if exists('g:plugs["neco-ghc"]')
-        " use necoghc's omnifunc for completion
-        augroup haskell
-            au!
-            au FileType haskell setlocal omnifunc=necoghc#omnifunc
-        augroup END
-        
+        let g:deoplete#omni#functions.haskell = 'necoghc#omnifunc'
+        let g:deoplete#omni#functions.lhaskell = 'necoghc#omnifunc'
+
         " show detailed type information
         let g:necoghc_enable_detailed_browse = 1
     endif
-
-    " LaTeX completionn
-    let g:deoplete#omni_patterns.tex =
-                \ '\v\\%('
-                \ . '\a*cite\a*%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
-                \ . '|\a*ref%(\s*\{[^}]*|range\s*\{[^,}]*%(}\{)?)'
-                \ . '|hyperref\s*\[[^]]*'
-                \ . '|includegraphics\*?%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
-                \ . '|%(include%(only)?|input)\s*\{[^}]*'
-                \ . ')\m'
 endif
-
 
 " -------
 " ack.vim
 " -------
 if exists('g:plugs["ack.vim"]')
-    let g:ackpg = 'ag --vimgrep'
+    " let g:ackpg = 'ag --vimgrep'
+    let g:ackpreg = 'rg --vimgrep --no-heading'
 endif
 
+" --------
+" undotree
+" --------
 if exists('g:plugs["undotree"]')
-    nnoremap <F3> :UndotreeToggle<cr>
+    let g:undotree_WindowLayout = 2
+    nnoremap U :UndotreeToggle<CR>
 endif
 
-if exists('g:plugs["ctrlp.vim"]')
-    nnoremap <silent><C-b> :<C-U>CtrlPBuffer<cr>
-    nnoremap <silent><C-t> :<C-u>CtrlPTag<cr>
-endif
-
+" -------
+" echodoc.
+" -------
 if exists('g:plugs["echodoc.vim"]')
     let g:echodoc_enable_at_startup = 1
 endif
 
+" ------------
+" vim-markdown
+" ------------
 if exists('g:plugs["vim-markdown"]')
     let g:markdown_fenced_languages = ['cpp', 'python', 'bash=sh']
+endif
+
+" --------------------
+" vim-github-dashboard
+" --------------------
+if exists('g:plugs["vim-github-dashboard"]')
+    let g:github_dashboard = { 'username': 'zyeri' }
+endif
+
+if exists('g:plugs["ctrlsf.vim"]')
+    nmap     <C-F>f <Plug>CtrlSFPrompt
+    vmap     <C-F>f <Plug>CtrlSFVwordPath
+    vmap     <C-F>F <Plug>CtrlSFVwordExec
+    nmap     <C-F>n <Plug>CtrlSFCwordPath
+    nmap     <C-F>p <Plug>CtrlSFPwordPath
+    nnoremap <C-F>o :CtrlSFOpen<CR>
+    nnoremap <C-F>t :CtrlSFToggle<CR>
+    inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+    nmap     <C-F>l <Plug>CtrlSFQuickfixPrompt
+    vmap     <C-F>l <Plug>CtrlSFQuickfixVwordPath
+    vmap     <C-F>L <Plug>CtrlSFQuickfixVwordExec
+endif
+
+
+if exists('g:plugs["ListToggle"]')
+    let g:lt_location_list_toggle_map = '<leader>ll'
+    let g:lt_quickfix_list_toggle_map = '<leader>qf'
 endif
