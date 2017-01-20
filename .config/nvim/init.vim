@@ -5,6 +5,9 @@ call plug#begin('$HOME/.config/nvim/plugged')
     Plug 'chriskempson/base16-vim'
     Plug 'sheerun/vim-polyglot'
     Plug 'vim-scripts/gnuplot.vim'
+    Plug 'baskerville/vim-sxhkdrc'
+
+    Plug 'vim-pandoc/vim-pandoc' | Plug 'vim-pandoc/vim-pandoc-syntax'
 
     Plug 'tpope/vim-git'
     Plug 'tpope/vim-repeat'
@@ -15,6 +18,7 @@ call plug#begin('$HOME/.config/nvim/plugged')
     Plug 'tpope/vim-unimpaired'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-speeddating'
+    Plug 'tpope/vim-projectionist'
 
     Plug 'mileszs/ack.vim'
     Plug 'neomake/neomake'
@@ -22,7 +26,7 @@ call plug#begin('$HOME/.config/nvim/plugged')
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'gregsexton/gitv'
     Plug 'Valloric/ListToggle'
-    Plug 'ap/vim-css-color'
+
     " Plug 'metakirby5/codi.vim'
     " Plug 'mhinz/vim-startify'
 
@@ -31,7 +35,7 @@ call plug#begin('$HOME/.config/nvim/plugged')
     Plug 'junegunn/fzf.vim'
     " Plug 'dyng/ctrlsf.vim'
 
-    Plug 'ctrlpvim/ctrlp.vim' | Plug 'nixprime/cpsm'
+    Plug 'ctrlpvim/ctrlp.vim' | Plug 'nixprime/cpsm', { 'do': './install.sh ' }
     Plug 'itchyny/lightline.vim' | Plug 'daviesjamie/vim-base16-lightline'
 
     Plug 'mbbill/undotree',     { 'on': 'UndotreeToggle' }
@@ -47,7 +51,7 @@ call plug#begin('$HOME/.config/nvim/plugged')
         Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
         " Plug 'Shougo/context_filetype.vim'
 
-        Plug 'ervandew/supertab'
+        " Plug 'ervandew/supertab'
         " " snippets
         " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
@@ -96,12 +100,18 @@ if has('nvim')
         set inccommand=nosplit
     endif
 
-    if exists('&termguicolors')
-        set termguicolors
-    endif
+    " if exists('&termguicolors')
+    "     set termguicolors
+    " endif
 
     tnoremap <Esc> <C-\><C-n>
 endif
+
+if filereadable(expand("~/.vimrc_background"))
+    let base16colorspace=256
+    source ~/.vimrc_background
+endif
+
 
 " use the comma key as <leader>
 let mapleader = ','
@@ -178,7 +188,8 @@ set wrapscan
 set autoread
 
 " control how neovim formats
-set formatoptions=tcqj
+" set formatoptions=tcqj
+set formatoptions=tqj
 
 " history to remember
 set history=10000
@@ -321,6 +332,7 @@ augroup vimrc
 
     " error format for clang
     au FileType c,cpp setl errorformat=%f:%l:%c:\ %t%s:\ %m
+    au FileType haskell,lhaskell  setlocal omnifunc=necoghc#omnifunc
 
     " for some reason polyglot sets it to javascript.jsx and ignores
     " g:polyglot_disabled, so use an autocmd to set the correct filetype
@@ -410,8 +422,12 @@ endif
 if exists('g:plugs["vimtex"]')
     let g:tex_flavor = 'latex'
 
-    let g:vimtex_indent_enabled = 0
+    " enable latexmk compilation
     let g:vimtex_latexmk_enabled = 1
+    let g:vimtex_latexmk_optipons = ' ... -synctex=1 ...'
+
+
+    let g:vimtex_indent_enabled = 0
     let g:vimtex_complete_enabled = 1
     let g:vimtex_complete_close_braces = 1
     let g:vimtex_fold_enabled = 1
@@ -475,8 +491,6 @@ if exists('g:plugs["deoplete.nvim"]')
         let g:deoplete#ignore_sources = {}
     endif
 
-    " set completeopt+=noinsert
-
     " use deoplete
     let g:deoplete#enable_at_startup = 1
 
@@ -516,7 +530,7 @@ if exists('g:plugs["deoplete.nvim"]')
     " C/C++ completion
     if exists('g:plugs["deoplete-clang"]')
         let g:deoplete#sources#clang#libclang_path = '/usr/lib/libclang.so'
-        let g:deoplete#sources#clang#clang_header = '/usr/lib/include/clang'
+        let g:deoplete#sources#clang#clang_header = '/usr/lib/clang/3.9.1/include'
         let g:deoplete#sources#clang#std = {'cpp': 'c++11', 'c': 'c11' }
         let g:deoplete#sources#clang#sort_algo = 'priority'
     endif
@@ -544,6 +558,7 @@ if exists('g:plugs["deoplete.nvim"]')
         " path to python binary
         if has('unix')
             let g:deoplete#sources#jedi#python_path = "/usr/bin/python3"
+            " let g:deoplete#sources#jedi#python_path = "/usr/bin/python2"
         elseif has('win32') || has('win64')
             let g:deoplete#sources#jedi#python_path = "C:\\Program Files\\Python35\\python.exe"
         endif
@@ -567,6 +582,7 @@ if exists('g:plugs["deoplete.nvim"]')
 
     " Haskell completion
     if exists('g:plugs["neco-ghc"]')
+        let g:haskellmode_completion_ghc = 0
         let g:deoplete#omni#functions.haskell = 'necoghc#omnifunc'
         let g:deoplete#omni#functions.lhaskell = 'necoghc#omnifunc'
 
@@ -630,4 +646,18 @@ endif
 if exists('g:plugs["ListToggle"]')
     let g:lt_location_list_toggle_map = '<leader>ll'
     let g:lt_quickfix_list_toggle_map = '<leader>qf'
+endif
+
+if exists('g:plugs["vim-pandoc"]')
+    " enabled modules
+    let g:pandoc#keyboard#use_default_mappings = 1
+    " formatting options
+    " let g:pandoc#formatting#mode = "ha"
+    " let g:pandoc#formatting#textwidth = 72
+
+    " what LaTeX engine should be used
+    let g:pandoc#command#latex_engine = "lualatex"
+
+    if exists('g:plugs["vim-pandoc-syntax"]')
+    endif
 endif
