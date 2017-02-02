@@ -5,4 +5,10 @@ if has('win32') || has('win64')
     set guiheadroom=0
 endif
 
+if has('nvim')
+    if exists('g:GuiLoaded')
+        Guifont! Roboto Mono:h12
+    endif
+endif
+
 
