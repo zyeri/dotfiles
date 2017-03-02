@@ -11,14 +11,10 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'jacoborus/tender.vim'
 
     Plug 'sheerun/vim-polyglot'
-    Plug 'vim-scripts/gnuplot.vim'
-    Plug 'baskerville/vim-sxhkdrc'
-    Plug 'chrisbra/csv.vim'
-    Plug 'mboughaba/i3config.vim'
+    Plug 'nickhutchinson/vim-cmake-syntax', { 'for': ['cmake'] }
 
     Plug 'tpope/vim-git'
     Plug 'tpope/vim-repeat'
-    " Plug 'tpope/vim-eunuch'
     Plug 'tpope/vim-dispatch'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-surround'
@@ -29,43 +25,40 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'tpope/vim-speeddating'
     Plug 'tpope/vim-projectionist'
 
+    Plug 'ludovicchabant/vim-gutentags'
+    Plug 'critiqjo/lldb.nvim'
     Plug 'mattn/calendar-vim'
     Plug 'chrisbra/NrrwRgn'
     Plug 'vim-scripts/SyntaxRange'
-    Plug 'jceb/vim-orgmode'
+
+    " Plug 'w0rp/ale'
+    " Plug 'jceb/vim-orgmode'
+    " Plug 'dhruvasagar/vim-table-mode'
 
     Plug 'equalsraf/neovim-gui-shim'
 
     Plug 'godlygeek/csapprox',  { 'for': 'fugitiveblame' }
-
     Plug 'jmcantrell/vim-virtualenv'
     Plug 'mileszs/ack.vim'
     Plug 'neomake/neomake'
     Plug 'gregsexton/gitv'
     Plug 'justinmk/vim-dirvish'
     Plug 'Valloric/ListToggle'
-
     Plug 'metakirby5/codi.vim'
-
-    Plug 'ludovicchabant/vim-gutentags'
-
     Plug 'AndrewRadev/splitjoin.vim'
     Plug 'AndrewRadev/linediff.vim'
     Plug 'jreybert/vimagit'
-
     Plug 'scrooloose/nerdtree'
+
 
     Plug 'junegunn/gv.vim'
     Plug 'junegunn/vim-github-dashboard', { 'on': ['GHDashboard', 'GHActivity']      }
     Plug 'junegunn/vim-easy-align'
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-    " Plug 'junegunn/fzf.vim'
 
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'tacahiroy/ctrlp-funky'
     Plug 'FelikZ/ctrlp-py-matcher'
-
-    " Plug 'nixprime/cpsm', { 'do': './install.sh ' }
 
     Plug 'bling/vim-bufferline'
     Plug 'itchyny/lightline.vim'
@@ -79,6 +72,17 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'lervag/vimtex'
     Plug 'rust-lang/rust.vim'
     Plug 'neovimhaskell/haskell-vim'
+
+    " Plug 'Valloric/YouCompleteMe' 
+    "             \ | Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+
+    function! BuildComposer(info)
+        if a:info.status != 'unchanged' || a:info.force
+            !cargo build --release
+        endif
+    endfunction
+
+    Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
 
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -119,23 +123,12 @@ let maplocalleader = '\\'
 " set the background type (light/dark) before activating a colorscheme
 set background=dark
 
-" enable colorscheme
-" silent! colorscheme janah
-
-" " set the colorscheme but dont't throw an error if it's unavailable
-
 if filereadable(expand("~/.vimrc_background"))
     let base16colorspace=256
     source ~/.vimrc_background
 endif
 
 silent! colorscheme base16-tomorrow-night
-" silent! colorscheme hybrid
-
-" silent! colorscheme tender
-
-" highlight! Normal ctermbg=NONE guibg=NONE
-" highlight! NonText ctermbg=NONE guibg=NONE
 
 " for detecting/enabling platform-specific features
 if !exists("g:platform")
@@ -148,8 +141,8 @@ endif
 
 " nvim-specific stuff
 if has('nvim')
-    let g:python3_host_prog = '/usr/bin/python3'
-    let g:python_host_prog = '/usr/bin/python2'
+    " let g:python3_host_prog = '/usr/bin/python3'
+    " let g:python_host_prog = '/usr/bin/python2'
 
     if exists('&inccommand')
         set inccommand=split
@@ -186,8 +179,6 @@ set colorcolumn=72
 
 " completion options
 set completeopt=menu,menuone,longest
-" set completeopt+=noinsert
-" set completeopt+=noselect
 
 " options for diff mode
 set diffopt=filler,icase,iwhite,vertical
@@ -308,22 +299,6 @@ set switchbuf=useopen
 " don't redray the window when executing macros
 set lazyredraw
 
-" if has('cscope')
-"     set cscopetag
-"     set csto=0
-
-"     set cscopequickfix=s-,c-,d-,i-,t-,e-
-"     " set cscopeverbose
-
-"     if filereadable('cscope.out')
-"         cs add cscope.out
-"     elseif $CSCOPE_DB != ''
-"         cs add $CDSCOPE_DB
-"     endif
-" endif
-
-" set clipboard=unnamedplus
-
 " -------------
 " netrw options
 " -------------
@@ -394,53 +369,21 @@ endfunction
 " --------
 " autocmds
 " --------
-autocmd FileType c,cpp setl errorformat=%f:%l:%c:\ %t%s:\ %m
+autocmd FileType c,cpp setlocal errorformat=%f:%l:%c:\ %t%s:\ %m
 autocmd FileType haskell,lhaskell  setlocal omnifunc=necoghc#omnifunc
-autocmd FileType gitcommit nnoremap <buffer> <silent> cA :<C-U>Gcommit --amend --date="$(date)"<CR>
 
-autocmd FileType markdown setlocal tw=80
+" ammend commit
+autocmd FileType gitcommit nnoremap <buffer> <silent> <leader>cA :<C-U>Gcommit --amend --date="$(date)"<CR>
+
+" autocmd FileType markdown setlocal tw=80
+autocmd FileType cmake setlocal commentstring=#\ %s
+
 autocmd BufReadPost fugitive:// setlocal bufhidden=delete
-
-" autocmd FileType GV
-"             \ set foldlevel=1
-"             \| nnoremap <buffer> q :qa<cr>
-"             \| nmap     <buffer> j j<cr>
-"             \| nmap     <buffer> k k<cr>
 
 " for some reason polyglot sets it to javascript.jsx and ignores
 " g:polyglot_disabled, so use an autocmd to set the correct filetype
 au FileType javascript.jsx setl ft=javascript
 
-" augroup vimrc
-"     au!
-"     " email buffer
-"     au BufRead,BufNewFile *mutt-* setf mail
-
-"     " error format for clang
-"     " configuration for TeX/LaTeX files
-"     au FileType tex call s:latex_setup()
-
-"     " amend commit
-
-"     " unset paste when leaving insert mode
-"     au InsertLeave * silent! set nopaste
-
-"     " close preview window after completion is done
-"     au CompleteDone * pclose!
-
-"     if exists('g:plugs["vim-dirvish"]')
-"         au FileType dirvish silent keeppatterns g@\v/\.[^\/]+/?$@d
-
-"         " list directories first
-"         au FileType dirvish silent :sort r /[^\/]$/
-
-"         " Enable :Gstatus and friends
-"         au FileType dirvish call fugitive#detect(@%)
-"         au FileType dirvish nnoremap <silent><buffer> gr :<C-u>Dirvish %<CR>
-"         au FileType dirvish nnoremap <silent><buffer>
-"                     \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d<CR>
-"     endif
-" augroup END
 
 " --------------------
 " plugin configuration
@@ -530,10 +473,9 @@ if exists('g:plugs["ctrlp.vim"]')
     " let g:ctrlp_mruf_relative = 1
 
     " mappings 
-    nnoremap <leader>f :CtrlP<CR>
-    nnoremap <leader>b :CtrlPBuffer<CR>
-    nnoremap <leader>m :CtrlPMRUFiles<CR>
-    nnoremap <leader>l :CtrlPLine<CR>
+    nnoremap <C-b> :CtrlPBuffer<CR>
+    nnoremap <leader>rf :CtrlPMRUFiles<CR>
+    nnoremap <leader>li :CtrlPLine<CR>
     nnoremap <leader>t :CtrlPTag<CR>
 
     if exists('g:plugs["ctrlp-funky"]')
@@ -591,6 +533,15 @@ if exists('g:plugs["tagbar"]')
                 \       'data'   : 'd',
                 \       'type'   : 't'
                 \   }
+                \ }
+
+    let g:tagbar_type_markdown = {
+                \ 'ctagstype' : 'markdown',
+                \ 'kinds' : [
+                \   'h:Heading_L1',
+                \   'i:Heading_L2',
+                \   'k:Heading_L3'
+                \   ]
                 \ }
 
     let g:tagbar_type_make = {
@@ -828,13 +779,13 @@ if exists('g:plugs["deoplete.nvim"]')
         " show docstring in preview window
         let g:deoplete#sources#jedi#show_docstring = 1
 
-        " path to python binary
-        if has('unix')
-            let g:deoplete#sources#jedi#python_path = "/usr/bin/python3"
-            " let g:deoplete#sources#jedi#python_path = "/usr/bin/python2"
-        elseif has('win32') || has('win64')
-            let g:deoplete#sources#jedi#python_path = "C:\\Program Files\\Python35\\python.exe"
-        endif
+        " " path to python binary
+        " if has('unix')
+        "     let g:deoplete#sources#jedi#python_path = "/usr/bin/python3"
+        "     " let g:deoplete#sources#jedi#python_path = "/usr/bin/python2"
+        " elseif has('win32') || has('win64')
+        "     let g:deoplete#sources#jedi#python_path = "C:\\Program Files\\Python35\\python.exe"
+        " endif
     endif
 
     " rtags completion
@@ -993,4 +944,19 @@ if exists('g:plugs["codi.vim"]')
     " left-align the codi buffer
     let g:codi#rightalign = 0
 
+endif
+
+if exists('g:plugs["vim-markdown-composer"]')
+    let g:markdown_composer_browser = '/usr/bin/google-chrome-stable'
+    let g:markdown_composer_open_browser = 0
+    let g:markdown_composer_syntax_theme = 'tomorrow-night'
+    let g:markdown_composer_autostart = 0
+endif
+
+if exists('g:plugs["vim-pandoc"]')
+    let g:pandoc#modules#disabled = ['folding', 'formatting']
+
+    " if exists('g:plugs["vim-pandoc-after"]')
+    "     let g:pandoc#after#modules#enabled = ['nrrwrgn', 'neosnippet', 'tablemode'] 
+    " endif
 endif
