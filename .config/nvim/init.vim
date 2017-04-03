@@ -1,9 +1,19 @@
 " init.vim
 
+" use the comma key as <leader>
+let mapleader = ','
+
+" use the backslash key as <localleader>
+let maplocalleader = '\\'
+
 " -------
 " Plugins
 " -------
-call plug#begin('~/.local/share/nvim/plugged')
+if has('nvim')
+    call plug#begin('~/.local/share/nvim/plugged')
+else
+    call plug#begin('~/.vim/plugged')
+endif
     " color schemes
     Plug 'chriskempson/base16-vim'
     Plug 'w0ng/vim-hybrid'
@@ -13,6 +23,7 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'sheerun/vim-polyglot'
     Plug 'nickhutchinson/vim-cmake-syntax', { 'for': ['cmake'] }
 
+    " <3 tpope
     Plug 'tpope/vim-git'
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-dispatch'
@@ -25,64 +36,102 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'tpope/vim-speeddating'
     Plug 'tpope/vim-projectionist'
 
-    Plug 'ludovicchabant/vim-gutentags'
-    Plug 'critiqjo/lldb.nvim'
     Plug 'mattn/calendar-vim'
     Plug 'chrisbra/NrrwRgn'
     Plug 'vim-scripts/SyntaxRange'
-
-    " Plug 'w0rp/ale'
-    " Plug 'jceb/vim-orgmode'
-    " Plug 'dhruvasagar/vim-table-mode'
-
-    Plug 'equalsraf/neovim-gui-shim'
+    Plug 'editorconfig/editorconfig-vim'
 
     Plug 'godlygeek/csapprox',  { 'for': 'fugitiveblame' }
-    Plug 'jmcantrell/vim-virtualenv'
-    Plug 'mileszs/ack.vim'
-    Plug 'neomake/neomake'
-    Plug 'gregsexton/gitv'
-    Plug 'justinmk/vim-dirvish'
     Plug 'Valloric/ListToggle'
+
+    " this thing is cool as fuck
     Plug 'metakirby5/codi.vim'
+
     Plug 'AndrewRadev/splitjoin.vim'
     Plug 'AndrewRadev/linediff.vim'
-    Plug 'jreybert/vimagit'
     Plug 'scrooloose/nerdtree'
-
-
-    Plug 'junegunn/gv.vim'
-    Plug 'junegunn/vim-github-dashboard', { 'on': ['GHDashboard', 'GHActivity']      }
-    Plug 'junegunn/vim-easy-align'
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'tacahiroy/ctrlp-funky'
     Plug 'FelikZ/ctrlp-py-matcher'
 
     Plug 'bling/vim-bufferline'
-    Plug 'itchyny/lightline.vim'
     Plug 'edkolev/tmuxline.vim'
+
+    " Plug 'vim-airline/vim-airline'
+    " Plug 'vim-airline/vim-airline-themes'
+
+    Plug 'itchyny/lightline.vim'
     Plug 'cocopon/lightline-hybrid.vim'
 
     Plug 'mbbill/undotree',     { 'on': 'UndotreeToggle' }
     Plug 'godlygeek/tabular',   { 'on': ['Tab', 'Tabularize'] }
-    Plug 'majutsushi/tagbar'
 
     Plug 'lervag/vimtex'
     Plug 'rust-lang/rust.vim'
     Plug 'neovimhaskell/haskell-vim'
 
-    " Plug 'Valloric/YouCompleteMe' 
-    "             \ | Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+    " TODO: find out why this breaks shit
+    " Plug 'critiqjo/lldb.nvim'
 
-    function! BuildComposer(info)
-        if a:info.status != 'unchanged' || a:info.force
-            !cargo build --release
-        endif
-    endfunction
+    " Plug 'w0rp/ale'
+    " Plug 'jceb/vim-orgmode'
+    " Plug 'dhruvasagar/vim-table-mode'
+    " Plug 'justinmk/vim-dirvish'
 
-    Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
+    if executable('ctags')
+        Plug 'ludovicchabant/vim-gutentags'
+    endif
+
+    if executable('nvim')
+        Plug 'equalsraf/neovim-gui-shim'
+    endif
+
+    if executable('python') || executable('python3')
+        Plug 'jmcantrell/vim-virtualenv'
+    endif
+    
+    " only install if the silver searcher, ack, or ripgrep are installed
+    if executable('ag') || executable('ack') || executable('rg')
+        Plug 'mileszs/ack.vim'
+    endif
+
+    if has('nvim')
+        Plug 'neomake/neomake'
+    endif
+
+    if executable('git')
+        Plug 'gregsexton/gitv'
+        Plug 'jreybert/vimagit'
+        Plug 'junegunn/gv.vim'
+        Plug 'junegunn/vim-github-dashboard', { 'on': ['GHDashboard', 'GHActivity']      }
+    endif
+
+    " this doesn't like to install properly on Windows for some reason
+    if !has('win32') || !has('win64')
+        Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    endif
+
+    if executable('ctags')
+        Plug 'majutsushi/tagbar'
+    endif
+
+    " if !exists('g:plugs["deoplete.nvim"]')
+    "     Plug 'Valloric/YouCompleteMe' | Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+    " endif
+
+    if has('nvim') && executable('rustc') && !exists('g:plugs["YouCompleteMe"]')
+        function! BuildComposer(info)
+            if a:info.status != 'unchanged' || a:info.force
+                !cargo build --release
+            endif
+        endfunction
+
+        Plug 'euclio/vim-markdown-composer', { 
+                    \   'do': function('BuildComposer'),
+                    \   'on': ['ComposerStart', 'ComposerUpdate', 'ComposerOpen', 'ComposerJob'] 
+                    \ }
+    endif
 
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -96,29 +145,47 @@ call plug#begin('~/.local/share/nvim/plugged')
         Plug 'Shougo/neco-vim', { 'for': ['vim'] }
         Plug 'Shougo/neco-syntax', { 'for': ['vim'] }
 
-        Plug 'wellle/tmux-complete.vim'
+        if executable('tmux')
+            Plug 'wellle/tmux-complete.vim'
+        endif
+        
+        if executable('go') || executable('gccgo')
+            Plug 'zchee/deoplete-go'
+        endif
 
-        Plug 'zchee/deoplete-go'
-        Plug 'zchee/deoplete-clang'
-        Plug 'zchee/deoplete-jedi'
+        if executable('clang')
+            Plug 'zchee/deoplete-clang'
+        endif
 
-        Plug 'eagletmt/neco-ghc'
-        Plug 'carlitux/deoplete-ternjs'
-        Plug 'fishbullet/deoplete-ruby'
-        Plug 'zchee/deoplete-zsh'
-        Plug 'sebastianmarkow/deoplete-rust'
+        if executable('python') || executable('python3')
+            Plug 'zchee/deoplete-jedi'
+        endif
+
+        if executable('ghc')
+            Plug 'eagletmt/neco-ghc'
+        endif
+
+        if executable('node')
+            Plug 'carlitux/deoplete-ternjs'
+        endif
+
+        if executable('ruby')
+            Plug 'fishbullet/deoplete-ruby'
+        endif
+
+        if executable('zsh')
+            Plug 'zchee/deoplete-zsh'
+        endif
+
+        if executable('rustc') && executable('cargo')
+            Plug 'sebastianmarkow/deoplete-rust'
+        endif
     endif
 call plug#end()
 
 " ------------------------
 "  Setup and Configuration
 " ------------------------
-
-" use the comma key as <leader>
-let mapleader = ','
-
-" use the backslash key as <localleader>
-let maplocalleader = '\\'
 
 " set the background type (light/dark) before activating a colorscheme
 set background=dark
@@ -130,19 +197,10 @@ endif
 
 silent! colorscheme base16-tomorrow-night
 
-" for detecting/enabling platform-specific features
-if !exists("g:platform")
-    if has("win32") || has("win64")
-        let s:platform='windows'
-    else
-        let s:platform = tolower(substitute(system('uname'), '\n', '', ''))
-    endif
-endif
-
 " nvim-specific stuff
 if has('nvim')
-    " let g:python3_host_prog = '/usr/bin/python3'
-    " let g:python_host_prog = '/usr/bin/python2'
+    let g:python3_host_prog = '/usr/bin/python3'
+    let g:python_host_prog = '/usr/bin/python2'
 
     if exists('&inccommand')
         set inccommand=split
@@ -165,7 +223,7 @@ elseif executable ('ag')
 endif
 
 " silly windows, not having a real shell
-if s:platform ==? 'windows'
+if has('win32') || has('win64')
     set shell=cmd.exe
     set shellcmdflag=/c
     set encoding=utf-8
@@ -287,28 +345,13 @@ set undofile
 set undolevels=5000
 
 set tags=./tags;/
-
-" indentation options
 set breakindent
 set copyindent
 set preserveindent
 set smartindent
-
 set switchbuf=useopen
-
-" don't redray the window when executing macros
 set lazyredraw
-
-" -------------
-" netrw options
-" -------------
-let g:netrw_banner = 0
-let g:netrw_browse_split = 4
-let g:netrw_altv = 1
-let g:netrw_liststyle = 3
-let g:netrw_preview = 1
-let g:netrw_list_hide = netrw_gitignore#Hide()
-let g:netrw_list_hide .= ',\(^\|\s\s\)\zs\.\S\+'
+set laststatus=2
 
 " --------
 " Commands
@@ -341,36 +384,11 @@ nnoremap <leader>bp :Neomake<CR>
 " insert a hashbang for the current filetype
 inoreabbrev <expr>#!! '#!/usr/bin/env' . (empty(&filetype) ? '' : ' '.&filetype)
 
-" ---------
-" Functions
-" ---------
-
-" configure latex
-function! s:latex_setup() abort
-    setlocal makeprg=latexmk\ -pdf\ %
-    setlocal conceallevel=0
-
-
-    let s:current_syntax = b:current_syntax
-    unlet b:current_syntax
-
-    syntax include @CPP syntax/cpp.vim
-    syntax include @CPP after/syntax/cpp.vim
-
-    syntax region texZone
-                \ start="\\begin{cppcode}"
-                \ end="\\end{cppcode}"
-                \ contains=@CPP,texBeginEnd
-                \ keepend
-                " \ transparent
-    hi link Snip SpecialComment
-endfunction
-
 " --------
 " autocmds
 " --------
-autocmd FileType c,cpp setlocal errorformat=%f:%l:%c:\ %t%s:\ %m
-autocmd FileType haskell,lhaskell  setlocal omnifunc=necoghc#omnifunc
+" autocmd FileType c,cpp setlocal errorformat=%f:%l:%c:\ %t%s:\ %m
+" autocmd FileType haskell,lhaskell  setlocal omnifunc=necoghc#omnifunc
 
 " ammend commit
 autocmd FileType gitcommit nnoremap <buffer> <silent> <leader>cA :<C-U>Gcommit --amend --date="$(date)"<CR>
@@ -407,7 +425,7 @@ endif
 " -----
 if exists('g:plugs["ctrlp.vim"]')
 
-    " prefer ripgrep and if that's not available, try ag.
+    " prefer ripgrep and if that's not available, try the silver searcher
     if executable('rg')
         let s:ctrlp_command = 'rg %s --files --color=never --glob ""'
         let g:ctrlp_use_caching = 0
@@ -427,7 +445,6 @@ if exists('g:plugs["ctrlp.vim"]')
                 \ 'fallback': s:ctrlp_command
                 \ }
 
-    " let g:ctrlp_match_func = { 'match': 'cpsm#CtrlPMatch' }
     let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 
     " what ctrlp extensions to load
@@ -440,8 +457,8 @@ if exists('g:plugs["ctrlp.vim"]')
     let g:ctrlp_map = '<C-p>'
     let g:ctrlp_cmd = 'CtrlP'
 
-    let g:ctrlp_working_path_mode = 'ca'
-
+    " I symlink a lot of files (such as my dotfiles), so make sure to follow
+    " those
     let g:ctrlp_follow_symlinks = 1
 
     " don't show hidden files
@@ -562,10 +579,10 @@ if exists('g:plugs["vimtex"]')
     let g:tex_flavor = 'latex'
 
     " enable latexmk compilation
-    let g:vimtex_build_dir = './build'
+    " let g:vimtex_build_dir = './build'
     let g:vimtex_latexmk_enabled = 1
 
-    let g:vimtex_view_method = 'zathura'
+    " let g:vimtex_view_method = 'zathura'
     let g:vimtex_view_enabled = 0
 
     let g:vimtex_indent_enabled = 0
@@ -573,8 +590,8 @@ if exists('g:plugs["vimtex"]')
     let g:vimtex_complete_close_braces = 1
     let g:vimtex_fold_enabled = 1
 
-    " enable vimtex mappings
-    let g:vimtex_mappings_enabled = 1
+    " " enable vimtex mappings
+    " let g:vimtex_mappings_enabled = 1
 endif
 
 " -------------
@@ -589,8 +606,7 @@ if exists('g:plugs["lightline.vim"]')
     let g:bufferline_fname_mod = ':~:.'
     let g:bufferline_pathshorten = 1
 
-
-                " \   'colorscheme': 'tender',
+    " TODO: make this work better
     let g:lightline = {
                 \   'active': {
                 \       'left': [ [ 'mode', 'paste' ],
@@ -645,14 +661,13 @@ if exists('g:plugs["lightline.vim"]')
     function! CtrlPStatusFunc_2(str)
         return lightline#statusline(0)
     endfunction
-
 endif
 
 " ----------
 " vim-dirvish
 " ----------
-if exists('g:plugs["vim-dirvish"]')
-endif
+" if exists('g:plugs["vim-dirvish"]')
+" endif
 
 " ------------
 " vim-surround
@@ -687,8 +702,7 @@ endif
 " --------
 if exists('g:plugs["deoplete.nvim"]')
 
-    " here be dragons...
-
+    " Be 'ye warned: Here be dragons.
     if !exists('g:deoplete#omni#input_patterns')
         let g:deoplete#omni#input_patterns = {}
     endif
@@ -779,6 +793,7 @@ if exists('g:plugs["deoplete.nvim"]')
         " show docstring in preview window
         let g:deoplete#sources#jedi#show_docstring = 1
 
+        " holy fuck why does this break everything?
         " " path to python binary
         " if has('unix')
         "     let g:deoplete#sources#jedi#python_path = "/usr/bin/python3"
@@ -800,9 +815,9 @@ if exists('g:plugs["deoplete.nvim"]')
 
 
     " Go completion
-    if exists('g:plugs["deoplete-go"]')
-        let g:deoplete#sources#go#gocode_binary = "/home/alex/src/goprojects/bin/gocode" "
-    endif
+    " if exists('g:plugs["deoplete-go"]')
+    "     let g:deoplete#sources#go#gocode_binary = "/home/alex/src/goprojects/bin/gocode" "
+    " endif
 
     " Haskell completion
     if exists('g:plugs["neco-ghc"]')
@@ -820,14 +835,20 @@ endif
 " -------------
 
 if exists('g:plugs["vim-gutentags"]')
-    let g:gutentags_ctags_executable_haskell = 'hasktags'
+    if executable('hasktags')
+        let g:gutentags_ctags_executable_haskell = 'hasktags'
+    endif
 endif
 
 " -------
 " ack.vim
 " -------
 if exists('g:plugs["ack.vim"]')
-    let g:ackpreg = 'rg --vimgrep --no-heading'
+    " TODO: add support for the silver searcher and ack if ripgrep is not
+    " available, possibly falling back to grep if none of the three are
+    if executable('rg')
+        let g:ackpreg = 'rg --vimgrep --no-heading'
+    endif
 endif
 
 " --------
@@ -864,6 +885,7 @@ endif
 " ListToggle
 " ----------
 if exists('g:plugs["ListToggle"]')
+    " TODO: remember that I have these mappings, damn it
     let g:lt_location_list_toggle_map = '<leader>ll'
     let g:lt_quickfix_list_toggle_map = '<leader>qf'
 endif
@@ -880,12 +902,13 @@ if exists('g:plugs["neomake"]')
                 \   'args': ['--build'],
                 \   'errorformat': '%f:%l:%c: %m',
                 \ }
+
     let g:neomake_makeclean_maker = {
                 \   'exe': 'make',
                 \   'args': ['clean']
                 \ }
 
-    let g:neomale_cpp_maker = {
+    let g:neomake_cpp_maker = {
                 \ 'args': ['-fsyntax-only', '-Wall', '-Wextra'],
                 \ 'errorformat':
                 \ '%-G%f:%s:,' .
@@ -909,13 +932,13 @@ endif
 " -----------
 " vim-airline
 " -----------
-" if exists('g:plugs["vim-airline"]')
-"     let g:airline_theme='hybrid'
-"     let g:airline_powerline_fonts = 1
+if exists('g:plugs["vim-airline"]')
+    let g:airline_theme='hybrid'
+    let g:airline_powerline_fonts = 1
 
-"     " collapse inactive buffer sectionsa
-"     let g:airline_inactive_collapse = 1
-" endif
+    " collapse inactive buffer sectionsa
+    let g:airline_inactive_collapse = 1
+endif
 
 " --------
 " nerdtree
@@ -959,4 +982,12 @@ if exists('g:plugs["vim-pandoc"]')
     " if exists('g:plugs["vim-pandoc-after"]')
     "     let g:pandoc#after#modules#enabled = ['nrrwrgn', 'neosnippet', 'tablemode'] 
     " endif
+endif
+
+if exists('g:plugs["vim-instant-markdown"]')
+    let g:instant_markdown_autostart = 0
+endif
+
+if exists('g:plugs["editorconfig-vim"]')
+    let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 endif
