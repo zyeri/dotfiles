@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-# sync with Google Calendar
-vdirsyncer sync google_calendar

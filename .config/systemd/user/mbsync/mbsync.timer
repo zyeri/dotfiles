@@ -1,9 +1,0 @@
-[Unit]
-Description=Periodically fetch new mail
-
-[Timer]
-OnBootSec=5min
-OnUnitActiveSec=5min
-
-[Install]
-WantedBy=timers.target
