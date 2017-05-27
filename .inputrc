@@ -1,0 +1,32 @@
+# vim: fdm=marker
+# inputrc
+
+$include /etc/inputrc
+
+set meta-flag on
+set input-meta on
+set output-meta on
+set convert-meta on
+
+set visible-stats on
+set page-completions on
+set completion-ignore-case on
+set completion-query-items 200
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set echo-control-characters off
+
+# vi-mode
+set editing-mode vi
+
+$if mode=vi
+    set keymap vi-command
+    "gg": beginning-of-history
+    "G": end-of-history
+
+    set keymap vi-insert
+    "\C-l": clear-screen
+    "\C-w": backward-kill-word
+    "\C-p": history-search-backward
+    "\C-n": history-search-forward
+$endif
