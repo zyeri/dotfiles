@@ -51,14 +51,6 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'equalsraf/neovim-gui-shim'
     endif
 
-    Plug 'tweekmonster/helpful.vim'
-    Plug 'tweekmonster/startuptime.vim'
-
-    " if has('nvim') && s:platform ==? 'linux'
-    " "     Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
-    "     Plug 'nixprime/cpsm'
-    " endif
-
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'FelikZ/ctrlp-py-matcher'
     Plug 'tacahiroy/ctrlp-funky'
@@ -66,77 +58,33 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'mileszs/ack.vim'
     Plug 'majutsushi/tagbar'
     Plug 'romainl/vim-qf'
-    " Plug 'mtth/scratch.vim'
-    " Plug 'airblade/vim-gitgutter'
-    " Plug 'ludovicchabant/vim-gutentags'
     Plug 'junegunn/gv.vim'
-    " Plug 'jreybert/vimagit'
-    " Plug 'jceb/vim-orgmode'
-    " Plug 'chrisbra/nrrwrgn'
-    " Plug 'jmcantrell/vim-virtualenv'
-    " Plug 'gregsexton/gitv'
-    " Plug 'mhinz/vim-startify'
-    " Plug 'unblevable/quick-scope'
 
-    " Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-    " Plug 'itchyny/lightline.vim'
+    Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 
     if has('nvim')
-        " Plug 'neomake/neomake'
-        " Plug 'w0rp/ale'
-
         " completion
         Plug 'roxma/python-support.nvim'
         Plug 'roxma/nvim-completion-manager'
-        " Plug 'roxma/ncm-github'
-        " Plug 'roxma/nvim-cm-tern', { 'do': 'npm install' }
-
         Plug 'fgrsnau/ncm-otherbuf'
         Plug 'Shougo/neco-syntax'
         Plug 'Shougo/neoinclude.vim'
-        " Plug 'mhartington/nvim-typescript', { 'do': 'npm install typescript' }
+        Plug 'roxma/ncm-clang'
 
         Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
-        " Rust
-        Plug 'rust-lang/rust.vim'
-        Plug 'racer-rust/vim-racer'
-        Plug 'roxma/nvim-cm-racer'
-
-        " Python
-        " Plug 'davidhalter/jedi-vim'
-        " Plug 'tell-k/vim-autopep8'
-        " Plug 'jmcantrell/vim-virtualenv'
-
-        " C/C++
-        " Plug 'roxma/clang_complete'
-        Plug 'roxma/ncm-clang'
     endif
-
-    " Plug 'roxma/vim-tmux-clipboard'
-    " Plug 'tmux-plugins/vim-tmux-focus-events'
-    " Plug 'whatyouhide/vim-tmux-syntax'
 
     Plug 'othree/html5.vim'
     Plug 'mattn/emmet-vim'
     Plug 'chr4/nginx.vim'
 
-    " Plug 'Shougo/neco-vim'
     Plug 'lervag/vimtex'
     Plug 'neovimhaskell/haskell-vim'
-    Plug 'chrisbra/csv.vim'
-
-    " Plug 'veegee/vim-pic'
 
     Plug 'pearofducks/ansible-vim'
     Plug 'lifepillar/pgsql.vim'
-    " Plug 'leafgarland/typescript-vim'
-    Plug 'vim-pandoc/vim-pandoc'
-    Plug 'vim-pandoc/vim-pandoc-syntax'
-    Plug 'jparise/vim-graphql'
-    " Plug 'kovetskiy/sxhkd-vim'
-    " Plug 'mboughaba/i3config.vim'
-    " Plug 'pangloss/vim-javascript'
+    Plug 'vim-pandoc/vim-pandoc' | Plug 'vim-pandoc/vim-pandoc-syntax'
     Plug 'sheerun/vim-polyglot'
     Plug 'nickhutchinson/vim-cmake-syntax'
 call plug#end()
@@ -162,9 +110,6 @@ set background=dark
 let base16colorspace=256
 silent! colorscheme base16-tomorrow-night
 
-" let g:onedark_termcolors=256
-" silent! colorscheme onedark
-
 if has('shada')
     set shada=!,'100,<100,s100,h
 endif
@@ -179,14 +124,6 @@ if !has('nvim') && v:version >= 800
 else
     runtime macros/matchit.vim
 endif
-
-" if executable("rg")
-"     set grepprg=rg\ --vimgrep\ --no-heading
-"     set grepformat=%f:%l:%c:%m,%f:%l:%m
-" elseif executable ('ag')
-"     set grepprg=ag\ --vimgrep
-"     set grepformat=%f:%l:%c:%m,%f:%l:%m
-" endif
 
 " persistent undo
 if has('persistent_undo')
@@ -210,7 +147,6 @@ set number
 set showmatch
 set ignorecase
 set smartcase
-" set shiftwidth=4 tabstop=4 softtabstop=4
 set splitright
 set splitbelow
 set noswapfile
@@ -282,7 +218,6 @@ let g:tex_comment_nospell = 1
 let g:netrw_banner = 0
 let g:netrw_keepdir = 0
 let g:netrw_liststyle = 3
-" let g:netrw_sort_options = 'i'
 let g:netrw_winsize = -28
 let g:netrw_sort_sequence = '[\/]$,*'
 let g:netrw_browse_split = 3
@@ -311,9 +246,6 @@ function! HighlightRepeats() range
 endfunction
 
 command! -range=% HighlightRepeats <line1>,<line2>call HighlightRepeats()
-
-" display the callstrack for recent exceptions
-command! Backtrace call exception#trace()
 
 " :Grep <keyword>
 command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
@@ -374,19 +306,11 @@ augroup vimrc
         autocmd BufEnter term://* startinsert
     endif
 
-    " autocmd FileType help let b:helpful=1
-
-    " " TODO: remove this when I'm done taking the course
-    " autocmd BufRead,BufNewFIle *.s  set ft=pic8
-    " autocmd BufRead,BufNewFile *.js set ft=javascript
-
     autocmd FileType gitcommit
                 \ nnoremap <buffer> <silent> <leader>cA
                 \ :<C-U>Gcommit --amend --date="$(date)"<CR>
 
     autocmd FileType GV setlocal foldlevel=1
-
-    " autocmd BufRead,BufNewFile *.csv set ft=csv
 
     " delete fugitive buffer when hidden
     autocmd BufReadPost fugitive:// setlocal bufhidden=delete
@@ -425,6 +349,7 @@ if exists('g:plugs["vim-polyglot"]')
                 \   'javascript',
                 \   'rust',
                 \   'tex',
+                \   'latex',
                 \   'markdown',
                 \   'haskell',
                 \   'lhaskell'
@@ -447,25 +372,15 @@ if exists('g:plugs["ctrlp.vim"]')
     let g:ctrlp_reuse_window = 'netrw\|help\|quickfix'
     let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:15,results:15'
 
-    " mappings
-    " nnoremap <c-b> :ctrlpbuffer<cr>
-    " nnoremap <c-f> :ctrlpline<cr>
 
     " leader mappings
     let g:ctrlp_map = '<C-p>'
     nnoremap <leader>. :CtrlPTag<CR>
-    " nnoremap <leader>p :ctrlp<cr>
-    " nnoremap <leader>b :ctrlpbuffer<cr>
-    " nnoremap <leader>o :ctrlpmrufiles<cr>
-
     nnoremap <leader>b :CtrlPBuffer<CR>
     nnoremap <leader>r :CtrlPMRUFiles<CR>
     nnoremap <leader>f :CtrlPFunky<CR>
     nnoremap <leader><C-f> :CtrlPFunky<CR>
     nnoremap <leader><C-l> :CtrlPLine<CR>
-
-    " nnoremap <C-x><C-r> :CtrlPMRUFiles<CR>
-
 
     if exists('g:plugs["ctrlp-funky"]')
         let g:ctrlp_funky_matchtype = 'path'
@@ -516,7 +431,6 @@ endif
 if exists('g:plugs["gutentags"]')
     " let g:gutentags_generate_on_empty_buffer = 1
     let g:gutentags_ctags_tagfile = '.tags'
-
     let g:gutentags_ctags_exclude = ['*node_modules*', 'tmp*', "package*json"]
 endif
 
@@ -710,22 +624,6 @@ if exists('g:plugs["vim-airline"]')
 endif
 
 " }}}
-" lightline {{{
-
-" if exists('g:plugs["lightline.vim"]')
-"     let g:lightline =
-"                 \ { 'colorscheme': '',
-
-" endif
-
-" }}}
-" csv.vim {{{
-
-if exists('g:plugs["csv.vim"]')
-    let g:csv_delim=','
-endif
-
-" }}}
 " vim-gitgutter {{{
 
 if exists('g:plugs["vim-gitgutter"]')
@@ -750,34 +648,6 @@ if exists('g:plugs["scratch.vim"]')
 endif
 
 " }}}
-" vim-virtualenv {{{
-
-if exists('g:plugs["vim-virtualenv"]')
-    " TODO: configure this
-endif
-
-" }}}
-" vim-ctrlspace {{{
-
-if exists('g:plugs["vim-ctrlspace"]')
-    if s:platform ==? 'linux'
-        let g:CtrlSpaceFileEngine = 'file_engine_linux_amd64'
-
-        if executable('rg')
-            let g:CtrlSpaceGlobCommand = 'rg -l --color=never -g ""'
-        endif
-    endif
-
-    nnoremap <silent><C-p> :CtrlSpace O<CR>
-endif
-
-" }}}
-" vimagit {{{
-
-if exists('g:plugs["vimagit"]')
-endif
-
-" }}}
 " denite.nvim {{{
 
 if exists('g:plugs["denite.nvim"]')
@@ -796,8 +666,6 @@ if exists('g:plugs["denite.nvim"]')
     call denite#custom#map('insert', '<C-p>', '<denite:move_to_previous_line>', 'noremap')
 
     call denite#custom#source('file_mru', 'matchers', ['matcher_fuzzy', 'matcher_project_files'])
-    " call denite#custom#source('file_rec', 'matchers', ['matcher_cpsm'])
-
 endif
 
 " }}}
@@ -812,13 +680,6 @@ if exists('g:plugs["vim-pandoc"]')
 endif
 
 " }}}
-" quick-scope {{{
-
-if exists('g:plugs["quick-scope"]')
-    let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
-endif
-
-" }}}
 " pgsql.vim {{{
 
 if exists('g:plugs["pgsql.vim"]')
@@ -829,7 +690,7 @@ endif
 " vim-virtualenv {{{
 
 if exists('g:plugs["vim-virtualenv"]')
-    let g:virtualenv_directory = $HOME . "/.venvs"
+    let g:virtualenv_directory = $HOME . "/.local/share/virtualenvs"
 endif
 
 " }}}

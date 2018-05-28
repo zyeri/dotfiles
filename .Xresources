@@ -1,34 +1,40 @@
-Xft.antialias:             	1
-Xft.autohint:              	0
-Xft.dpi:                   	98
-Xft.hinting:               	1
-Xft.hintstyle:             	hintfull
-Xft.lcdfilter:             	lcddefault
-Xft.rgba:                  	rgb
+! -*- mode: conf-xdefaults -*-
+! vim: ft=xdefaults cms=!\ %s
 
-URxvt.font:                     xft:Roboto Mono:style=regular:size=10:antialias=true:hinting=hintfull
-URxvt.boldFont:                 xft:Roboto Mono:stlye=bold:size=10:antialias=true:hinting=hintfull
+! Emacs
+Emacs.menuBar: true
+Emacs.toolBar: false
+Emacs.verticalScrollBars: false
 
-URxvt.skipBuiltinGlyphs:   	true
-URxvt.secondaryScreen:     	true
-URxvt.secondaryScroll:     	false
-URxvt.iso14755:            	false
-URxvt.iso14755_52:            	false
-URxvt.scrollBar:           	false
-URxvt.scrollTtyOutput:     	false
-URxvt.scrollWithBuffer:    	true
-URxvt.scrollTtyKeypress:   	true
-URxvt.cursorBlink:         	true
-URxvt.urgentOnBell:        	true
-URxvt.buffered:            	true
+! xft
+Xft.dpi: 96
+Xft.rgba: rgb
+Xft.hinting: 1
+Xft.autohint: 0
+Xft.antialias: 1
+Xft.hintstyle: hintslight
+Xft.lcdfilter: lcddefault
 
-URxvt.saveLines:           	1000
-URxvt.depth:               	32
+! URxvt
+URxvt*font: xft:Iosevka:size=12:antialias=true
+URxvt*boldFont: xft:Iosevka:bold:size=12:antialias=true
+
+URxvt*saveLines: 5000
+URxvt*secondaryScreen: true
+URxvt*scrollWithBuffer: true
+URxvt*scrollTtyKeypress: true
+URxvt*scrollTtyOutput: false
+URxvt*secondaryScroll: false
+URxvt*scrollBar: false
+
+URxvt*iso14755: false
+URxvt*iso14755_52: false
+
+URxvt*url-launcher: /usr/bin/xdg-open
 
 ! https://github.com/chriskempson/base16-xresources
 ! Base16 Tomorrow Night
 ! Scheme: Chris Kempson (http://chriskempson.com)
-
 #define base00 #1d1f21
 #define base01 #282a2e
 #define base02 #373b41

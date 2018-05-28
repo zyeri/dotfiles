@@ -8,10 +8,6 @@
 load-module module-equalizer-sink sink_name=equalizer
 load-module module-dbus-protocol
 
-# load bs2b ladspa sink using the equalizer as its master so that we
-# have the equalizer and bs2b active on on a single sink
-load-module module-ladspa-sink sink_name=crossfeed master=equalizer plugin=bs2b label=bs2b control=650,9.5
-
 # prevent laptop from being loud if headphones are accidentially
 # unplugged.
 load-module module-switch-on-port-available

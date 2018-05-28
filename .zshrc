@@ -1,283 +1,208 @@
-# dotfiles location
-export DOTFILES=~/.dotfiles
+# ~/.zshrc
 
-# locale options
-export LANG=en_US.UTF-8
-export LC_CTYPE="en_US.UTF-8"
+source $HOME/.zplug/init.zsh
 
-# stops lag in vim
+zplug themes/mh, from:oh-my-zsh, as:theme
+zplug plugins/git, from:oh-my-zsh
+
+zplug zsh-users/zsh-completions
+zplug zsh-users/zsh-history-substring-search
+zplug zsh-users/zsh-syntax-highlighting, defer:2
+
+zplug load
+
+ttyctl -f
+
+setopt PROMPT_SUBST
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt long_list_jobs
+setopt interactivecomments
+setopt extended_glob
+setopt equals
+setopt complete_aliases
+setopt multios
+setopt autocd
+
+setopt append_history
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_verify
+setopt inc_append_history
+setopt share_history
+
+# completion
+zmodload -i zsh/complist
+
+setopt auto_menu
+setopt complete_in_word
+setopt always_to_end
+
+zstyle ":completion:*" menu select=2
+bindkey -M menuselect '^O' accept-and-infer-next-history
+zstyle ':completion:*:*:*:*:*' menu select
+
+zstyle ':completion:*' rehash true
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' insert-tab pending
+
+# fuzzy completion
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*approximate:*' max-errors 1 numeric
+
+# use a cache to speed things up
+zstyle ':completion::complete:*' use-cache 1
+zstyle ':completion::complete:*' cache-path ~/.zsh/cache
+
+zstyle ':completion:*:default' group-name ''
+zstyle ':completion:*:manuals' separate-sections true
+zstyle ':completion:*:manuals.(^1*)' insert-sections true
+zstyle ':completion:*' menu select
+zstyle ':completion:*' verbose yes
+
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX + $#SUFFIX) / 3 )) )'
+zstyle ':completion::approximate*:*' prefix-needed false
+
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+
+# bindings
+bindkey -v
+
+# C-x C-e to edit current line in $EDITOR
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
+
+bindkey -M viins '^W' backward-kill-word
+bindkey -M viins '^H' backward-delete-char
+
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
+
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+
+bindkey -M vicmd '/' history-incremental-pattern-search-backward
+bindkey -M vicmd '?' history-incremental-pattern-search-forward
+
+# aliases
+
+# always sort directories first
+alias ls='ls --color=auto --group-directories-first'
+alias tree='tree --dirsfirst'
+alias diff='diff --color=always'
+
+# short forms with useful flags
+alias l='ls -h -S -I ".git"'
+alias t='tree -I ".git"'
+
+# ps with cgroups
+alias psc='ps xawf -eo pid,user,cgroup,args'
+
+# misc
+
+# commands/functions
+ranger-cd () {
+    tempfile="$(mktemp -t tmp.XXXXXX)"
+    /usr/bin/ranger --choosedir="$tempfile" "${@:-$(pwd)}"
+    test -f "$tempfile" &&
+    if [ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]; then
+        cd -- "$(cat "$tempfile")"
+    fi
+    rm -f -- "$tempfile"
+}
+
+fkill () {
+  pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+
+  if [ "x$pid" != "x" ]
+  then
+    kill -${1:-9} $pid
+  fi
+}
+
+fuck () {
+    TF_PREVIOUS=$(fc -ln 1 | tail -n 1);
+    TF_CMD=$(
+        TF_ALIAS=fuck
+        TF_SHELL_ALIAS=$(alias)
+        PYTHONIOENCODING=utf-8
+        thefuck $TF_PREVIOUS THEFUCK_ARGUMENT_PLACEHOLDER $*
+    ) && eval $TF_CMD
+    test -n "$TF_CMD" && print -s $TF_CMD
+}
+
+
+# termite ctrl+shift+t support
+if [[ $TERM == xterm-termite ]] ; then
+    . /etc/profile.d/vte.sh
+    __vte_osc7
+fi
+
+export NPM_PACKAGES="${HOME}/.npm-packages"
+export GOPATH="${HOME}/src/go"
+typeset -U path
+
+path=(
+    $HOME/bin
+    $HOME/.zplug/bin
+    $HOME/.cargo/bin
+    $NPM_PACKAGES/bin
+    $path[@]
+)
+
+fpath=(
+    $HOME/.zsh/zfunc
+    $fpath
+)
+
+# pager
+export PAGER=less
+export LESS='-R -f -X -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]'
+export LESSCHARSET='utf-8'
+export MANPAGER="/usr/bin/nvim -c 'set ft=man' -"
+
+# history
+export HISTFILE=~/.zsh_history
+export HISTSIZE=10000
+export SAVEHIST=100000
+export LISTMAX=100
+
+export DIRSTACKSIZE=20
+
+# disable history in root
+if [[ $UID == 0 ]] ; then
+    unset HISTFILE
+    export SAVEHIST=0
+fi
+
+# system editor
+export EDITOR=/usr/bin/nvim
+
+# fix tmux lag
 export KEYTIMEOUT=1
 
-# set $TERM
-export TERM=screen-256color
-
-# command for fzf to use
-export FZF_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -g "") 2> /dev/null'
-
-# change the mode indication that vim-mode uses
-export MODE_INDICATOR="%{$fg_bold[yellow]%} [% NORMAL]% %{$reset_color%}"
-
-# make ~/bin most preferred in PATH
-export PATH="$HOME/bin:$PATH"
-
-# ---
-
-# get the name of the branch we are on
-function git_prompt_info() {
-  if [[ "$(command git config --get oh-my-zsh.hide-status 2>/dev/null)" != "1" ]]; then
-    ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
-    ref=$(command git rev-parse --short HEAD 2> /dev/null) || return 0
-    echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}$(parse_git_dirty)$ZSH_THEME_GIT_PROMPT_SUFFIX"
-  fi
-}
-
-
-# Checks if working tree is dirty
-parse_git_dirty() {
-  local STATUS=''
-  local FLAGS
-  FLAGS=('--porcelain')
-  if [[ "$(command git config --get oh-my-zsh.hide-dirty)" != "1" ]]; then
-    if [[ $POST_1_7_2_GIT -gt 0 ]]; then
-      FLAGS+='--ignore-submodules=dirty'
-    fi
-    if [[ "$DISABLE_UNTRACKED_FILES_DIRTY" == "true" ]]; then
-      FLAGS+='--untracked-files=no'
-    fi
-    STATUS=$(command git status ${FLAGS} 2> /dev/null | tail -n1)
-  fi
-  if [[ -n $STATUS ]]; then
-    echo "$ZSH_THEME_GIT_PROMPT_DIRTY"
-  else
-    echo "$ZSH_THEME_GIT_PROMPT_CLEAN"
-  fi
-}
-
-# get the difference between the local and remote branches
-git_remote_status() {
-    remote=${$(command git rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
-    if [[ -n ${remote} ]] ; then
-        ahead=$(command git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
-        behind=$(command git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
-
-        if [ $ahead -eq 0 ] && [ $behind -eq 0 ]
-        then
-          	git_remote_status="$ZSH_THEME_GIT_PROMPT_EQUAL_REMOTE"
-        elif [ $ahead -gt 0 ] && [ $behind -eq 0 ]
-        then
-            git_remote_status="$ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE"
-            git_remote_status_detailed="$ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE_COLOR$ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE$((ahead))%{$reset_color%}"
-        elif [ $behind -gt 0 ] && [ $ahead -eq 0 ] 
-        then
-            git_remote_status="$ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE"
-            git_remote_status_detailed="$ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE_COLOR$ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE$((behind))%{$reset_color%}"
-        elif [ $ahead -gt 0 ] && [ $behind -gt 0 ]
-        then
-            git_remote_status="$ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE"
-            git_remote_status_detailed="$ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE_COLOR$ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE$((ahead))%{$reset_color%}$ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE_COLOR$ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE$((behind))%{$reset_color%}"
-        fi
-
-        if [ $ZSH_THEME_GIT_PROMPT_REMOTE_STATUS_DETAILED ]
-        then
-            git_remote_status="$ZSH_THEME_GIT_PROMPT_REMOTE_STATUS_PREFIX$remote$git_remote_status_detailed$ZSH_THEME_GIT_PROMPT_REMOTE_STATUS_SUFFIX"
-        fi
-
-        echo $git_remote_status
-    fi
-}
-
-# Gets the number of commits ahead from remote
-function git_commits_ahead() {
-  if $(echo "$(command git log @{upstream}..HEAD 2> /dev/null)" | grep '^commit' &> /dev/null); then
-    COMMITS=$(command git log @{upstream}..HEAD | grep '^commit' | wc -l | tr -d ' ')
-    echo "$ZSH_THEME_GIT_COMMITS_AHEAD_PREFIX$COMMITS$ZSH_THEME_GIT_COMMITS_AHEAD_SUFFIX"
-  fi
-}
-
-# Outputs if current branch is ahead of remote
-function git_prompt_ahead() {
-  if [[ -n "$(command git rev-list origin/$(current_branch)..HEAD 2> /dev/null)" ]]; then
-    echo "$ZSH_THEME_GIT_PROMPT_AHEAD"
-  fi
-}
-
-# Outputs if current branch is behind remote
-function git_prompt_behind() {
-  if [[ -n "$(command git rev-list HEAD..origin/$(current_branch) 2> /dev/null)" ]]; then
-    echo "$ZSH_THEME_GIT_PROMPT_BEHIND"
-  fi
-}
-
-# Outputs if current branch exists on remote or not
-function git_prompt_remote() {
-  if [[ -n "$(command git show-ref origin/$(current_branch) 2> /dev/null)" ]]; then
-    echo "$ZSH_THEME_GIT_PROMPT_REMOTE_EXISTS"
-  else
-    echo "$ZSH_THEME_GIT_PROMPT_REMOTE_MISSING"
-  fi
-}
-
-# Formats prompt string for current git commit short SHA
-function git_prompt_short_sha() {
-  SHA=$(command git rev-parse --short HEAD 2> /dev/null) && echo "$ZSH_THEME_GIT_PROMPT_SHA_BEFORE$SHA$ZSH_THEME_GIT_PROMPT_SHA_AFTER"
-}
-
-# Formats prompt string for current git commit long SHA
-function git_prompt_long_sha() {
-  SHA=$(command git rev-parse HEAD 2> /dev/null) && echo "$ZSH_THEME_GIT_PROMPT_SHA_BEFORE$SHA$ZSH_THEME_GIT_PROMPT_SHA_AFTER"
-}
-
-# Get the status of the working tree
-git_prompt_status() {
-  INDEX=$(command git status --porcelain -b 2> /dev/null)
-  STATUS=""
-  if $(echo "$INDEX" | command grep -E '^\?\? ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_UNTRACKED$STATUS"
-  fi
-  if $(echo "$INDEX" | grep '^A  ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_ADDED$STATUS"
-  elif $(echo "$INDEX" | grep '^M  ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_ADDED$STATUS"
-  fi
-  if $(echo "$INDEX" | grep '^ M ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_MODIFIED$STATUS"
-  elif $(echo "$INDEX" | grep '^AM ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_MODIFIED$STATUS"
-  elif $(echo "$INDEX" | grep '^ T ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_MODIFIED$STATUS"
-  fi
-  if $(echo "$INDEX" | grep '^R  ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_RENAMED$STATUS"
-  fi
-  if $(echo "$INDEX" | grep '^ D ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_DELETED$STATUS"
-  elif $(echo "$INDEX" | grep '^D  ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_DELETED$STATUS"
-  elif $(echo "$INDEX" | grep '^AD ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_DELETED$STATUS"
-  fi
-  if $(command git rev-parse --verify refs/stash >/dev/null 2>&1); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_STASHED$STATUS"
-  fi
-  if $(echo "$INDEX" | grep '^UU ' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_UNMERGED$STATUS"
-  fi
-  if $(echo "$INDEX" | grep '^## .*ahead' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_AHEAD$STATUS"
-  fi
-  if $(echo "$INDEX" | grep '^## .*behind' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_BEHIND$STATUS"
-  fi
-  if $(echo "$INDEX" | grep '^## .*diverged' &> /dev/null); then
-    STATUS="$ZSH_THEME_GIT_PROMPT_DIVERGED$STATUS"
-  fi
-  echo $STATUS
-}
-
-#compare the provided version of git to the version installed and on path
-#prints 1 if input version <= installed version
-#prints -1 otherwise
-function git_compare_version() {
-  local INPUT_GIT_VERSION=$1;
-  local INSTALLED_GIT_VERSION
-  INPUT_GIT_VERSION=(${(s/./)INPUT_GIT_VERSION});
-  INSTALLED_GIT_VERSION=($(command git --version 2>/dev/null));
-  INSTALLED_GIT_VERSION=(${(s/./)INSTALLED_GIT_VERSION[3]});
-
-  for i in {1..3}; do
-    if [[ $INSTALLED_GIT_VERSION[$i] -gt $INPUT_GIT_VERSION[$i] ]]; then
-      echo 1
-      return 0
-    fi
-    if [[ $INSTALLED_GIT_VERSION[$i] -lt $INPUT_GIT_VERSION[$i] ]]; then
-      echo -1
-      return 0
-    fi
-  done
-  echo 0
-}
-
-#this is unlikely to change so make it all statically assigned
-POST_1_7_2_GIT=$(git_compare_version "1.7.2")
-#clean up the namespace slightly by removing the checker function
-unset -f git_compare_version
-
-# ---
-
-# ls colors
-autoload -U colors && colors
-export LSCOLORS="Gxfxcxdxbxegedabagacad"
-
-# Enable ls colors
-if [ "$DISABLE_LS_COLORS" != "true" ]
-then
-  # Find the option for using colors in ls, depending on the version: Linux or BSD
-  if [[ "$(uname -s)" == "NetBSD" ]]; then
-    # On NetBSD, test if "gls" (GNU ls) is installed (this one supports colors);
-    # otherwise, leave ls as is, because NetBSD's ls doesn't support -G
-    gls --color -d . &>/dev/null 2>&1 && alias ls='gls --color=tty'
-  elif [[ "$(uname -s)" == "OpenBSD" ]]; then
-    # On OpenBSD, "gls" (ls from GNU coreutils) and "colorls" (ls from base, 
-    # with color and multibyte support) are available from ports.  "colorls"  
-    # will be installed on purpose and can't be pulled in by installing 
-    # coreutils, so prefer it to "gls".
-    gls --color -d . &>/dev/null 2>&1 && alias ls='gls --color=tty'
-    colorls -G -d . &>/dev/null 2>&1 && alias ls='colorls -G'
-  else
-    ls --color -d . &>/dev/null 2>&1 && alias ls='ls --color=tty' || alias ls='ls -G'
-  fi
+unset SSH_AGENT_PID
+if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+    export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"
 fi
 
-#setopt no_beep
-setopt auto_cd
-setopt multios
-setopt cdablevars
+# Set GPG TTY
+export GPG_TTY=$(tty)
 
-if [[ x$WINDOW != x ]]
-then
-    SCREEN_NO="%B$WINDOW%b "
-else
-    SCREEN_NO=""
-fi
+# Refresh gpg-agent tty in case user switches into an X session
+gpg-connect-agent updatestartuptty /bye >/dev/null
 
-# Apply theming defaults
-PS1="%n@%m:%~%# "
+# fzf
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh
 
-# git theming default: Variables for theming the git info prompt
-ZSH_THEME_GIT_PROMPT_PREFIX="git:("         # Prefix at the very beginning of the prompt, before the branch name
-ZSH_THEME_GIT_PROMPT_SUFFIX=")"             # At the very end of the prompt
-ZSH_THEME_GIT_PROMPT_DIRTY="*"              # Text to display if the branch is dirty
-ZSH_THEME_GIT_PROMPT_CLEAN=""               # Text to display if the branch is clean
+export RANGER_LOAD_DEFAULT_RC=false
 
-# Setup the prompt with pretty colors
-setopt prompt_subst
+BASE16_SHELL="$HOME/.config/base16-shell/"
+[ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
 
-# ---
-
-
-# disable annoying things
-setopt no_beep
-
-# disable ^S
-setopt no_flowcontrol
-
-# ---
-
-# enable prompt and colors
-autoload -U compinit promptinit colors 
-compinit && promptinit && colors
-
-# bindings for history-substring
-bindkey '^P' history-substring-search-up
-bindkey '^N' histroy-substring-search-down
-
-# load local shell configuration if present
-if [[ -f ~/.zshrc.local  ]]
-then
-    source ~/.zshrc.local
-fi
-
-# load fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-prompt walters

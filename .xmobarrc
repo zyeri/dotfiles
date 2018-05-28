@@ -1,12 +1,15 @@
-Config { font           = "xft:Roboto Mono:size=10:medium:antialias=true"
+-- -*- mode: haskell -*-
+-- vi: set ft=haskell :
+
+Config { font = "xft:Iosevka:size=12:antialias=true"
        , additionalFonts = ["xft:FontAwesome-10"]
-       , bgColor        = "#1d1f21"
-       , fgColor        = "#c5c8c6"
+       , bgColor = "#1d1f21"
+       , fgColor = "#c5c8c6"
        , position = Top
        , border = NoBorder
        , commands =
            [ Run UnsafeStdinReader
-           , Run Date "%H:%M:%S - %y/%m/%d" "date" 10
+           , Run Date "%F (%a) %T" "date" 10
            , Run Battery [ "--template", "batt: <acstatus>"
                          , "--Low",         "10"
                          , "--High",        "80"
@@ -21,10 +24,13 @@ Config { font           = "xft:Roboto Mono:size=10:medium:antialias=true"
                          , "-O"   , "<fc=#b5bd68>Charging</fc>"
                          -- charged status
                          , "-i"   , "<fc=#81a2be>Charged</fc>"] 60
+           -- , Run MPD ["-t", "<state>: <title> by <artist>"] 10
            ]
        , sepChar = "%"
        , alignSep = "}{"
        , template = " %UnsafeStdinReader% }{ %battery% | %date% "
        }
 
--- vim: ft=haskell
+           -- , Run MPD ["-t",
+           --            "<title> (<album>) <track>/<plength> <statei> [<flags>]",
+           --            "--", "-P", ">>", "-Z", "|", "-S", "><"] 10

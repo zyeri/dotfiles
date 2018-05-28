@@ -1,0 +1,120 @@
+{
+    "editor.fontFamily": "Iosevka",
+    "editor.fontSize": 16,
+    "editor.fontLigatures": false,
+    "editor.cursorStyle": "block",
+    "editor.accessibilitySupport": "off",
+    "editor.cursorBlinking": "blink",
+    "editor.lineNumbers": "relative",
+    "editor.minimap.enabled": false,
+    "editor.mouseWheelZoom": true,
+    "editor.roundedSelection": false,
+    "editor.smoothScrolling": false,
+    "editor.stablePeek": true,
+    "editor.suggestSelection": "recentlyUsedByPrefix",
+
+    "files.associations": {
+        "Pipfile": "toml",
+        "Vagrantfile": "ruby"
+    },
+
+    "terminal.external.linuxExec": "/usr/bin/termite",
+    "terminal.external.osxExec": "iTerm2.app",
+
+    "workbench.iconTheme": "vscode-icons",
+    "workbench.startupEditor": "none",
+    "workbench.commandPalette.history": 500,
+    "workbench.commandPalette.preserveInput": true,
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editor.labelFormat": "medium",
+    "workbench.editor.revealIfOpen": true,
+    "workbench.editor.tabCloseButton": "left",
+    "workbench.statusBar.feedback.visible": false,
+    "workbench.tree.horizontalScrolling": true,
+    "workbench.view.alwaysShowHeaderActions": true,
+
+    "window.newWindowDimensions": "inherit",
+    "window.restoreWindows": "none",
+    "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}${separator}${appName}",
+
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "files.useExperimentalFileWatcher": false,
+
+    "explorer.sortOrder": "default",
+
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/venv/**": true,
+        "**/.tox/**": true,
+        "**/.pytest_cache/**": true,
+        "**/.vagrant/**": true
+    },
+
+    "search.location": "sidebar",
+    "search.smartCase": true,
+    "search.useRipgrep": true,
+
+    "html.format.indentInnerHtml": true,
+    "html.suggest.angular1": false,
+    "html.suggest.ionic": false,
+
+    "extensions.ignoreRecommendations": true,
+
+    "python.autoComplete.showAdvancedMembers": true,
+    "python.autoComplete.preloadModules": [
+        "flask",
+        "sqlalchemy"
+    ],
+
+    "python.disablePromptForFeatures": [
+        "pylint"
+    ],
+
+    "python.formatting.provider": "yapf",
+    "python.linting.pylamaEnabled": true,
+    "python.linting.pydocstyleEnabled": false,
+    "python.linting.mypyEnabled": true,
+
+    "python.linting.mypyArgs": [
+        "--ignore-missing-imports",
+        "--follow-imports=silent"
+    ],
+
+    "python.linting.ignorePatterns": [
+        ".vscode/*.py",
+        "**/site-packages/**/*.py",
+        "**/venv/**",
+        ".tox/**"
+    ],
+
+    "python.venvPath": "~/.local/share/virtualenvs",
+
+    "python.workspaceSymbols.enabled": true,
+    "python.workspaceSymbols.exclusionPatterns": [
+        "**/site-packages/**"
+    ],
+
+    "C_Cpp.clang_format_path": "/usr/bin/clang-format",
+    "C_Cpp.clang_format_style": "file",
+    "C_Cpp.default.cStandard": "c11",
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.intelliSenseMode": "clang-x64",
+
+    "liveshare.connectionMode": "auto",
+
+    "git.defaultCloneDirectory": "/home/alex/projects",
+    "git.enableCommitSigning": true,
+    "git.path": "/usr/bin/git",
+
+    "vim.neovimPath": "/usr/bin/nvim",
+    "vim.enableNeovim": true,
+    "vim.cmdLineInitialColon": true,
+    "vim.hlsearch": true,
+    "vim.statusBarColorControl": true,
+    "vim.textwidth": 72,
+    "vim.useSystemClipboard": true,
+    "files.autoSave": "off"
+}
