@@ -101,8 +101,8 @@
 (setq custom-safe-themes t)
 
 ;; line wrapping
-(setq truncate-lines t
-      truncate-partial-width-windows 50)
+(setq-default truncate-lines t
+	      truncate-partial-width-windows 50)
 
 (setq save-interprogram-paste-before-kill t
       sentence-end-double-space nil
