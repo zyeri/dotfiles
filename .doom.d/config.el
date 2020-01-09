@@ -45,26 +45,9 @@
 ;;; Frames/Windows
 (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
-;;
-;;; Keybinds
-(map! :leader
-      (:prefix "f"
-        "t" #'find-in-dotfiles
-        "T" #'browse-dotfiles)
 
-      ;; my arrow keys aren't working, so set up some temporary bindings to move
-      ;; lines around until I can get them fixed/replaced
-      "[ e" #'drag-stuff-up
-      "] e" #'drag-stuff-down
 
-      (:prefix "p"
-        "/" #'+ivy/project-search)
 
-      (:prefix "t"
-        "m" #'toggle-frame-maximized))
-
-(map! :gnvime "M-K" #'drag-stuff-up
-      :gnvime "M-J" #'drag-stuff-down)
 
 ;;; :completion ivy
 (setq +ivy-buffer-preview t)
@@ -108,3 +91,4 @@
 
 (when IS-MAC
   (setq +latex-viewers '(skim pdf-tools)))
+(load! "+bindings")
