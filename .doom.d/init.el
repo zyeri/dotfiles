@@ -14,9 +14,9 @@
 
        :completion
        company           ; the ultimate code completion backend
-       ;helm              ; the *other* search engine for love and life
-       ;;ido               ; the other *other* search engine...
-       (ivy +prescient) ; a search engine for love and life
+       ;;helm            ; the *other* search engine for love and life
+       ;;ido             ; the other *other* search engine...
+       (ivy +prescient)  ; a search engine for love and life
 
        :ui
        ;;deft              ; notational velocity for Emacs
@@ -37,7 +37,7 @@
        treemacs          ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
-       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+       ;;vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
        workspaces        ; tab emulation, persistence & separate workspaces
 
@@ -56,33 +56,33 @@
        ;;word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       dired             ; making dired pretty [functional]
+       (dired +icons)             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
-       ibuffer           ; interactive buffer management
+       (ibuffer +icons)           ; interactive buffer management
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
        eshell            ; a consistent, cross-platform shell (WIP)
        ;;shell             ; a terminal REPL for Emacs
        ;;term              ; terminals in Emacs
-       ;;vterm             ; another terminals in Emacs
+       vterm             ; another terminals in Emacs
 
        :tools
-       ;;ansible
+       ansible
        ;;debugger          ; FIXME stepping through code, to help you add bugs
        direnv
        ;;docker
        editorconfig      ; let someone else argue about tabs vs spaces
        ;;ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
-       flycheck          ; tasing you for every semicolon you forget
+       ;;flycheck          ; tasing you for every semicolon you forget
        ;;flyspell          ; tasing you for misspelling mispelling
        ;;gist              ; interacting with github gists
        (lookup +docsets)
        lsp
        macos             ; MacOS-specific commands
        magit             ; a git porcelain for Emacs
-       ;;make            ; run make tasks from Emacs
+       make            ; run make tasks from Emacs
        pass              ; password manager for nerds
        pdf               ; pdf enhancements
        ;; prodigy           ; FIXME managing external services & code builders
@@ -94,7 +94,7 @@
 
        :lang
        ;;agda              ; types of types of types of types...
-       ;;assembly          ; assembly for fun or debugging
+       assembly          ; assembly for fun or debugging
        (cc +lsp)                ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
        common-lisp         ; if you've seen one lisp, you've seen them all
@@ -109,7 +109,7 @@
        ;;ess               ; emacs speaks statistics
        ;;faust             ; dsp, but you get to keep your soul
        ;;fsharp           ; ML stands for Microsoft's Language
-       ;;go                ; the hipster dialect
+       ;go                ; the hipster dialect
        (haskell +lsp) ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
@@ -119,44 +119,44 @@
        ;;kotlin            ; a better, slicker Java(Script)
        latex             ; writing papers in Emacs has never been so fun
        ;;lean
-       ;;ledger            ; an accounting system in Emacs
+       ledger            ; an accounting system in Emacs
        lua
                                         ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +dragndrop +gnuplot +jupyter +pandoc +hugo +present)
+       (org +brain +dragndrop +gnuplot +jupyter +pandoc +hugo +present)
        ;;perl              ; write code no one else can comprehend
-       php               ; perl's insecure younger brother
+       (php +lsp)               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        (python +lsp) ; beautiful is better than ugly
-       qt                ; the 'cutest' gui framework ever
+       ;;qt                ; the 'cutest' gui framework ever
        racket            ; a DSL for DSLs
-       rest              ; Emacs as a REST client
+       ;;rest              ; Emacs as a REST client
        rst               ; ReST in peace
        ruby              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        (rust +lsp)              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; java, but good
        scheme            ; a fully conniving family of lisps
-       sh                ; she sells {ba,z,fi}sh shells on the C xor
+       (sh +lsp)                ; she sells {ba,z,fi}sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       web               ; the tubes
+       (web +lsp)               ; the tubes
 
        :email
-       ;;mu4e
-       ;;notmuch
+       ; (mu4e +gmail)
+       ; notmuch
        ;;(wanderlust +gmail)
 
        :app
-       ;; calendar
+       ;;calendar
        ;;irc               ; how neckbeards socialize
-       ;;(rss +org)        ; emacs as an RSS reader
+       (rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
-       (write +langtool)              ; emacs for writers (fiction, notes, papers, etc.)
+       ;;(write +langtool)              ; emacs for writers (fiction, notes, papers, etc.)
 
        :config
        ;;literate
