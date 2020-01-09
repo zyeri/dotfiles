@@ -67,16 +67,6 @@
                          (magit-rebase "--autosquash" "--gpg-sign=0x1C534F4138D5CCE4")
                          (magit-pull "--rebase" "--gpg-sign=0x1C534F4138D5CCE4")))
 
-;;; :lang org
-(setq org-directory "~/org/"
-      org-bullets-bullet-list '("*"))
-
-(setq-default org-hide-leading-stars nil)
-
-;; revert TAB behavior (cycle subtree visibility state recursively)
-(after! evil-org
-  (remove-hook 'org-tab-first-hook #'+org-cycle-only-current-subtree-h))
-
 ;;; :ui vc-gutter
 (setq +vc-gutter-in-remote-files nil)
 
@@ -91,4 +81,5 @@
 
 (when IS-MAC
   (setq +latex-viewers '(skim pdf-tools)))
+(load! "+org")
 (load! "+bindings")
