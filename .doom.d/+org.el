@@ -13,7 +13,7 @@
   :after org
   :init
   (setq org-ref-bibliography-notes "~/org/bibliography/notes.org"
-        org-ref-default-bibliography '("~/org/bibliography/refererences.bib")
+        org-ref-default-bibliography '("~/org/bibliography/references.bib")
         org-ref-pdf-directory "~/org/bibliography/pdfs")
 
   (when (featurep! :completion ivy)
