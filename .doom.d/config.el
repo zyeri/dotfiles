@@ -4,6 +4,12 @@
       user-mail-address "zyeryi@gmail.com"
       epa-file-encrypt-to user-mail-address)
 
+(setq lsp-ui-sideline-enable nil
+      lsp-enable-indentation nil
+      lsp-enable-on-type-formatting nil
+      lsp-enable-symbol-highlighting nil
+      lsp-enable-file-watchers nil)
+
 ;; auto refresh ibuffer
 (add-hook! 'ibuffer-mode-hook #'ibuffer-auto-mode)
 
@@ -59,6 +65,10 @@
                          (magit-rebase "--autosquash" "--gpg-sign=0x1C534F4138D5CCE4")
                          (magit-pull "--rebase" "--gpg-sign=0x1C534F4138D5CCE4")))
 
+;;; :ui doom-dashboard
+;; force the dashboard to set `default-directory' to $HOME
+(setq +doom-dashboard-pwd-policy (getenv "HOME"))
+
 ;;; :ui vc-gutter
 (setq +vc-gutter-in-remote-files nil)
 
@@ -67,6 +77,11 @@
 
 (setq +latex-bibtex-file "~/org/bibliography/references.bib"
       +latex-enable-unicode-math t)
+
+;;; :lang cc
+;; use objdump from binutils
+(when IS-MAC
+  (setq disaster-objdump "/usr/local/opt/binutils/bin/objdump -d -M att -Sl --no-show-raw-insn"))
 
 ;;; :tools pdf
 (after! pdf-tools

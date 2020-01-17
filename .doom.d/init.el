@@ -74,10 +74,10 @@
 
        :tools
        ansible
-       ;;debugger          ; FIXME stepping through code, to help you add bugs
+       debugger            ; FIXME stepping through code, to help you add bugs
        direnv
-       ;;docker
-       editorconfig      ; let someone else argue about tabs vs spaces
+       docker
+       editorconfig        ; let someone else argue about tabs vs spaces
        ;;ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
@@ -88,18 +88,18 @@
        make            ; run make tasks from Emacs
        pass              ; password manager for nerds
        pdf               ; pdf enhancements
-       ;; prodigy           ; FIXME managing external services & code builders
+       ;;prodigy           ; FIXME managing external services & code builders
        ;;rgb               ; creating color strings
        ;;terraform         ; infrastructure as code
-       ;; tmux              ; an API for interacting with tmux
-       ;; upload            ; map local to remote projects via ssh/ftp
+       ;;tmux              ; an API for interacting with tmux
+       upload            ; map local to remote projects via ssh/ftp
        ;;wakatime
 
        :lang
        ;;agda              ; types of types of types of types...
-       assembly          ; assembly for fun or debugging
-       (cc +lsp)                ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
+       assembly            ; assembly for fun or debugging
+       (cc +lsp)           ; C/C++/Obj-C madness
        common-lisp         ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
